@@ -7,7 +7,7 @@
 #define TASTER 5                          // Anschlußpin für den Taster zum Einschalten der Wasserpumpe
 #define RELAIS 4                          // Anschlußpin für das Relais, welches die Wasserpumpe steuert
 
-const int Taster = 2;                     // +++ lieber per define +++
+const int Taster = 3;                     // +++ lieber per define +++
 volatile int TasterStatus = 0;            // 
 
 // LCD per I2C und die Adresse 0x37
