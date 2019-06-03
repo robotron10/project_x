@@ -1,20 +1,35 @@
+// Datum: 03.06.2019
+// Autor: Stephanie Nawroth, Thorsten Graf, Fabian Roth
+//
+// Thema: vollautomatisches Gewächshaus
+
 #include "DHT.h"                
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-#define DHTTYPE DHT22                     // Typ des Temperatur- und Feuchtesensors
-#define DHTPIN 6                          // Anschlußpin für Temperatur- und Feuchtesensor
-#define TASTER 5                          // Anschlußpin für den Taster zum Einschalten der Wasserpumpe
-#define RELAIS 4                          // Anschlußpin für das Relais, welches die Wasserpumpe steuert
+#define DHTTYPE DHT22                     // Typ des Temperatur- und Feuchtesensors  
+#define TASTER_PUMPE_OBEN 2               // Anschlußpin für den Taster zum Einschalten der Wasserpumpe oben mit ISR                     
+#define TASTER_PUMPE_UNTEN 3              // Anschlußpin für den Taster zum Einschalten der Wasserpumpe unten mit ISR
+#define RELAIS_PUMPE_OBEN 4               // Anschlußpin für das Relais, welches die Wasserpumpe oben steuert
+#define RELAIS_PUMPE_UNTEN 5              // Anschlußpin für das Relais, welches die Wasserpumpe unten steuert
+#define ERDFEUCHTESENSOR_1 6              // Anschlußpin für den Erdfeuchtesensor
+#define ERDFEUCHTESENSOR_2 7              // Anschlußpin für den Erdfeuchtesensor
+#define TEMPERATURSENSOR_LUEFTER 8        // Anschlußpin für Temperatur- und Feuchtesensor DHT22
+#define RELAIS_LUEFTER 9
+#define RELAIS_HEIZUNG 10
+#define RELAIS_MOTOR_FENSTER 11
+#define HELLIGKEITSSENSOR_UV_LED 12
+#define RELAIS_UV_LED 13
 
-const int Taster = 3;                     // +++ lieber per define +++
-volatile int TasterStatus = 0;            // 
+volatile int taster_status = 0;            // 
 
 // LCD per I2C und die Adresse 0x37
+// Pin 4 -> SDA
+// Pin 5 -> SCL
 LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);                               
 
 // Temperatur- und Feuchtesensor einrichten (Pin, Typ)
-DHT dht(DHTPIN, DHTTYPE);
+DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
 
 // Setup des Programms, wird nur einmal ausgeführt
 void setup() {
@@ -28,17 +43,17 @@ void setup() {
   dht.begin();
   
   // Pumpen Setup
-  pinMode(RELAIS, OUTPUT);                  // Relais für die Wasserpume
-  pinMode(Taster, INPUT);
+  pinMode(RELAIS_PUMPE_UNTEN, OUTPUT);                  // Relais für die Wasserpume
+  pinMode(TASTER_PUMPE_UNTEN, INPUT);
   
   // ISR einrichten    
-  attachInterrupt(0, TasterUnterbricht, LOW);
+  attachInterrupt(0, taster_unterbricht, LOW);
 }
 
 // Schleife des Programms
 void loop() {
 
-  int taster = digitalRead(TASTER);         // Tasterzustand an Pin 5 lesen
+  int taster = digitalRead(TASTER_PUMPE_UNTEN);         // Tasterzustand an Pin 3 lesen
 
   
   /********************************( Tempsensor )*********************************************/ 
@@ -72,11 +87,11 @@ void loop() {
 /********************************( Wasserpumpe )*********************************************/
      // Bedingung für die Wasserpumpe(Relais)
      if (taster == HIGH){                   // bei Tastendruck - Relais ein
-          digitalWrite(RELAIS, HIGH);
+          digitalWrite(RELAIS_PUMPE_UNTEN, HIGH);
           lcd.setCursor(13,3);
           lcd.print("EIN");                 // Ausgabe auf den Display
      } else {
-          digitalWrite(RELAIS, LOW);        // kein Tastendruck - Relais aus
+          digitalWrite(RELAIS_PUMPE_UNTEN, LOW);        // kein Tastendruck - Relais aus
           lcd.setCursor(13,3);
           lcd.print("AUS");                 // Ausgabe auf den Display
      }
@@ -84,7 +99,7 @@ void loop() {
   }
 
   // ISR um die Pumpe manuell ein-/ausschalten zu können
-void TasterUnterbricht() {
-   TasterStatus = digitalRead(Taster);      // Tasterstatus einlesen (High/Low)
-   digitalWrite(RELAIS, TasterStatus);      // Relais schalten
+void taster_unterbricht() {
+   taster_status = digitalRead(TASTER_PUMPE_UNTEN);      // Tasterstatus einlesen (High/Low)
+   digitalWrite(RELAIS_PUMPE_UNTEN, taster_status);      // Relais schalten
 }
