@@ -1,4 +1,4 @@
-// Datum: 05.06.2019
+// Datum: 12.06.2019
 // Autor: Stephanie Nawroth, Torsten Graf, Fabian Roth
 //
 // Thema: vollautomatisches Gewächshaus
@@ -49,9 +49,13 @@ unsigned long dt_warten_durchfeuchtung_ms = 10000;
 unsigned long t0_heizung;
 unsigned long dt_heizung_ms = 5000;
 
+unsigned long t0_luefter;
+unsigned long dt_luefter_ms = 5000;
+
 int limit_bodenfeuchte_1 = 500;
 int limit_bodenfeuchte_2 = 500;
-int limit_temperatur = 15.00;
+float limit_temperatur = 25.00;                               // Lufttemperaturwert -> Heizen
+float limit_luefter = 27.00;                                  // Lufttemperaturwert -> Lüften
 int taster, hum_erde_1, hum_erde_2;
 
 #define zustand_warten_zu_trocken  0
@@ -171,6 +175,10 @@ void setup() {
   digitalWrite(RELAIS_PUMPE_UNTEN, HIGH );                        // HIGH = Relais AUS
   pinMode(RELAIS_PUMPE_OBEN, OUTPUT);                             // Relais für die Wasserpume
   digitalWrite(RELAIS_PUMPE_OBEN, HIGH );                         // HIGH = Relais AUS
+
+  // Lüfter 
+  pinMode(RELAIS_LUEFTER, OUTPUT);                                // Relais für den Lüfter
+  digitalWrite(RELAIS_LUEFTER, HIGH );                        // HIGH = Relais AUS
   
   // Taster
   pinMode(TASTER_PUMPE_UNTEN, INPUT);
@@ -181,7 +189,9 @@ void setup() {
 
   // ISR einrichten
   //  attachInterrupt(0, taster_unterbricht, LOW);
-
+  
+  t0_heizung = millis();
+  t0_luefter = millis();
   t0_display = millis();
   t0_temperaturmessung = millis();
   t0_erdfeuchtemessung = millis();
@@ -236,6 +246,16 @@ void loop() {
     }
   }
 
+/******************************** Lüfter **************************************/
+  if ( ( millis() - t0_luefter ) > dt_luefter_ms ) {
+    t0_luefter = millis();
+    if (temp_luft > limit_luefter ) {
+      digitalWrite(RELAIS_LUEFTER, LOW );  //  LOW = Relais EIN
+    }
+    else {
+      digitalWrite(RELAIS_LUEFTER, HIGH );  //  High = Relais AUS
+    }
+  }
   
   /*
     // --- Übergangsautomat:
@@ -254,7 +274,7 @@ void loop() {
   switch ( zustand ) {
 
     case zustand_warten_zu_trocken :
-      //--- im Zustand bleben, bis if() erfüllt -> neuer ZUstand
+      //--- im Zustand bleiben, bis if() erfüllt -> neuer ZUstand
       if ( hum_erde_1 < limit_bodenfeuchte_1 ) {
         digitalWrite(RELAIS_PUMPE_UNTEN, LOW );                        // LOW = Relais EIN
         t0_pumpe = millis();
