@@ -18,6 +18,9 @@
 #define RELAIS_PUMPE_UNTEN 5              // Anschlußpin für das Relais, welches die Wasserpumpe unten steuert
 #define ERDFEUCHTESENSOR_1 A0             // Anschlußpin für den Erdfeuchtesensor
 #define ERDFEUCHTESENSOR_2 A1             // Anschlußpin für den Erdfeuchtesensor
+#define HELLIGKEITSSENSOR A2              // 
+#define LIMIT_ERDFEUCHTE A3               // 
+#define LIMIT_TEMPERATUR A4
 #define TEMPERATURSENSOR_LUEFTER 8        // Anschlußpin für Name  DHT22
 #define RELAIS_LUEFTER 9
 #define RELAIS_HEIZUNG 10
@@ -60,6 +63,7 @@ int limit_bodenfeuchte_2 = 500;
 int limit_helligkeit = 500;
 float limit_temperatur = 25.00;                               // Lufttemperaturwert -> Heizen
 float limit_luefter = 27.00;                                  // Lufttemperaturwert -> Lüften
+
 
 #define zustand_warten_zu_trocken  0
 #define zustand_pumpt 1
@@ -148,7 +152,7 @@ void update_lcd() {
   lcd.setCursor(0, 3);                                              // Displayausgabe vierte Zeile
   lcd.print(
     make_string(
-      String( "Erdfeuchte2: " + String(hum_erde_2) + String( (char)37 )
+      String( "Erd_Limit_1: " + String(limit_bodenfeuchte_1) + String( (char)37 )
             )
     )
   );
@@ -175,6 +179,7 @@ void setup() {
   hum_erde_1 = analogRead( ERDFEUCHTESENSOR_1 );                  // Lesen der Erdfeuchtigkeit
   hum_erde_2 = analogRead( ERDFEUCHTESENSOR_2 );                  // Lesen der Erdfeuchtigkeit
 
+  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE);
 
   // Pumpen 
   pinMode(RELAIS_PUMPE_UNTEN, OUTPUT);                            // Relais für die Wasserpume
@@ -184,7 +189,7 @@ void setup() {
 
   // Lüfter 
   pinMode(RELAIS_LUEFTER, OUTPUT);                                // Relais für den Lüfter
-  digitalWrite(RELAIS_LUEFTER, HIGH );                        // HIGH = Relais AUS
+  digitalWrite(RELAIS_LUEFTER, HIGH );                            // HIGH = Relais AUS
   
   // Taster
   pinMode(TASTER_PUMPE_UNTEN, INPUT);
@@ -194,7 +199,7 @@ void setup() {
   digitalWrite(RELAIS_HEIZUNG, LOW );                             // --- Solid State Relais: LOW = AUS
 
   // Helligkeitssensor
-  helligkeit = analogRead(A3);
+  helligkeit = analogRead(HELLIGKEITSSENSOR);
 
   // ISR einrichten
   //  attachInterrupt(0, taster_unterbricht, LOW);
@@ -220,13 +225,12 @@ void setup() {
 
 void loop() {
 
+  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE);
+
   /*  if ( taster == LOW ) and ( digitalRead(TASTER_PUMPE_UNTEN) == HIGH ) {
     taster == HIGH;
     }
   */
-
-  //  int messwert_bodenfeuchte_1 = analogRead( ERDFEUCHTESENSOR_1 );   // Werte zwischen 0..1023
-  //  int messwert_bodenfeuchte_2 = analogRead( ERDFEUCHTESENSOR_2 );   // Werte zwischen 0..1023
 
   /********************************( Display Ausgabe )*****************************************************/
   if ( ( millis() - t0_display ) > dt_display_ms ) {
@@ -245,14 +249,10 @@ void loop() {
   if ( ( millis() - t0_heizung ) > dt_heizung_ms ) {
     t0_heizung = millis();
     if (temp_luft < limit_temperatur ) {
-      digitalWrite(RELAIS_HEIZUNG, HIGH );  // --- Solid State Relais: HIGH = EIN, heizen
-      lcd.setCursor(19, 1);
-      lcd.print("L");
+      digitalWrite(RELAIS_HEIZUNG, HIGH );                          // --- Solid State Relais: HIGH = EIN, heizen;
     }
     else {
-      digitalWrite(RELAIS_HEIZUNG, LOW );  // --- Solid State Relais: LOW = AUS, nicht heízen
-      lcd.setCursor(19, 1);
-      lcd.print("H");
+      digitalWrite(RELAIS_HEIZUNG, LOW );                           // --- Solid State Relais: LOW = AUS, nicht heízen
     }
   }
 
@@ -260,12 +260,12 @@ void loop() {
   if ( ( millis() - t0_luefter ) > dt_luefter_ms ) {
     t0_luefter = millis();
     if (temp_luft > limit_luefter ) {
-      digitalWrite(RELAIS_LUEFTER, LOW );           //  LOW = Relais EIN
-      digitalWrite(RELAIS_MOTOR_FENSTER, LOW );     //  LOW = Relais EIN
+      digitalWrite(RELAIS_LUEFTER, LOW );                          //  LOW = Relais EIN
+      digitalWrite(RELAIS_MOTOR_FENSTER, LOW );                    //  LOW = Relais EIN
     }
     else {
-      digitalWrite(RELAIS_LUEFTER, HIGH );          //  High = Relais AUS
-      digitalWrite(RELAIS_MOTOR_FENSTER, HIGH );    //  High = Relais AUS
+      digitalWrite(RELAIS_LUEFTER, HIGH );                        //  High = Relais AUS
+      digitalWrite(RELAIS_MOTOR_FENSTER, HIGH );                  //  High = Relais AUS
     }
   }
 
@@ -284,7 +284,7 @@ void loop() {
   /******************************** REED-Kontakt -> Scheibe offen  ***************************************/
 
  /* 
-  if ( ( reedkontakt == zu ) {
+  if ( reedkontakt == zu ) {
     dann führe den Übergangsautomaten aus
     
   }
