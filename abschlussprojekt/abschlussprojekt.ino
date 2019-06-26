@@ -52,18 +52,23 @@ unsigned long dt_heizung_ms = 5000;
 unsigned long t0_luefter;
 unsigned long dt_luefter_ms = 5000;
 
+unsigned long t0_helligkeit;
+unsigned long dt_helligkeit_ms = 5000;
+
 int limit_bodenfeuchte_1 = 500;
 int limit_bodenfeuchte_2 = 500;
+int limit_helligkeit = 500;
 float limit_temperatur = 25.00;                               // Lufttemperaturwert -> Heizen
 float limit_luefter = 27.00;                                  // Lufttemperaturwert -> Lüften
-int taster, hum_erde_1, hum_erde_2;
 
 #define zustand_warten_zu_trocken  0
 #define zustand_pumpt 1
 #define zustand_warten_durchfeuchtung 2
 int zustand = zustand_warten_zu_trocken;
 
+int taster, hum_erde_1, hum_erde_2, helligkeit;
 float temp_luft, hum_luft;
+
 
 //-------------------------------------------------------
 // LCD per I2C und die Adresse 0x37
@@ -72,10 +77,10 @@ float temp_luft, hum_luft;
 //-------------------------------------------------------
 
 // Windows
-//LiquidCrystal_I2C lcd(0x3F, 20, 4 );
+LiquidCrystal_I2C lcd(0x3F, 20, 4 );
 
 // Linux
-LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+//LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 // Temperatur- und Feuchtesensor einrichten (Pin, Typ)
 DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
@@ -158,7 +163,8 @@ void setup() {
   //  LCD Setup
   //lcd.init();                                                   // Windows
   //lcd.backlight();                                              // Windows
-  lcd.begin(20, 4);                                               // Linux
+  //lcd.begin(20, 4);                                             // Linux
+  lcd.begin();                                                    // Linux
   lcd.setCursor(0, 0);
   lcd.print("+++ STARTING...  +++");
 
@@ -187,12 +193,16 @@ void setup() {
   pinMode(RELAIS_HEIZUNG, OUTPUT);
   digitalWrite(RELAIS_HEIZUNG, LOW );                             // --- Solid State Relais: LOW = AUS
 
+  // Helligkeitssensor
+  helligkeit = analogRead(A3);
+
   // ISR einrichten
   //  attachInterrupt(0, taster_unterbricht, LOW);
   
   t0_heizung = millis();
   t0_luefter = millis();
   t0_display = millis();
+  t0_helligkeit = millis();
   t0_temperaturmessung = millis();
   t0_erdfeuchtemessung = millis();
 
@@ -218,7 +228,7 @@ void loop() {
   //  int messwert_bodenfeuchte_1 = analogRead( ERDFEUCHTESENSOR_1 );   // Werte zwischen 0..1023
   //  int messwert_bodenfeuchte_2 = analogRead( ERDFEUCHTESENSOR_2 );   // Werte zwischen 0..1023
 
-  /********************************( Display Ausgabe )**********************************+++++++***********/
+  /********************************( Display Ausgabe )*****************************************************/
   if ( ( millis() - t0_display ) > dt_display_ms ) {
     t0_display = millis();
     update_lcd();
@@ -231,7 +241,7 @@ void loop() {
   }
 
 
-  /******************************** Heizung ***********************************/
+  /******************************** Heizung <--> Temperatursensor DHT22 ***********************************/
   if ( ( millis() - t0_heizung ) > dt_heizung_ms ) {
     t0_heizung = millis();
     if (temp_luft < limit_temperatur ) {
@@ -246,19 +256,44 @@ void loop() {
     }
   }
 
-/******************************** Lüfter **************************************/
+/******************************** Lüfter + Motor Scheibe vorne <--> Temperatursensor DHT22 ****************/
   if ( ( millis() - t0_luefter ) > dt_luefter_ms ) {
     t0_luefter = millis();
     if (temp_luft > limit_luefter ) {
-      digitalWrite(RELAIS_LUEFTER, LOW );  //  LOW = Relais EIN
+      digitalWrite(RELAIS_LUEFTER, LOW );           //  LOW = Relais EIN
+      digitalWrite(RELAIS_MOTOR_FENSTER, LOW );     //  LOW = Relais EIN
     }
     else {
-      digitalWrite(RELAIS_LUEFTER, HIGH );  //  High = Relais AUS
+      digitalWrite(RELAIS_LUEFTER, HIGH );          //  High = Relais AUS
+      digitalWrite(RELAIS_MOTOR_FENSTER, HIGH );    //  High = Relais AUS
     }
   }
+
+  /******************************** LED-Licht <--> Helligkeitssensor *************************************/
+  if ( ( millis() - t0_helligkeit ) > dt_helligkeit_ms ) {
+    t0_helligkeit = millis();
+    if (helligkeit > limit_helligkeit ) {           //  wenn dunkel, dann:
+      digitalWrite(RELAIS_UV_LED, LOW );            //  LOW = Relais EIN
+    }
+    else {                                          //  sonst:
+      digitalWrite(RELAIS_UV_LED, HIGH );           //  High = Relais AUS
+    }
+  }
+
+
+  /******************************** REED-Kontakt -> Scheibe offen  ***************************************/
+
+ /* 
+  if ( ( reedkontakt == zu ) {
+    dann führe den Übergangsautomaten aus
+    
+  }
+  
+  */  
+  
   
   /*
-    // --- Übergangsautomat:
+    // --- Übergangsautomat Erdfeuchte:
     1. (warten)
       warten auf "zu trocken", d.h. bis Feuchtigkeit zu niedrig.
       Wenn zu trocken; Pumpe ein, Statzeit für Pumpe notieren
@@ -275,7 +310,7 @@ void loop() {
 
     case zustand_warten_zu_trocken :
       //--- im Zustand bleiben, bis if() erfüllt -> neuer ZUstand
-      if ( hum_erde_1 < limit_bodenfeuchte_1 ) {
+      if ( hum_erde_1 > limit_bodenfeuchte_1 ) {
         digitalWrite(RELAIS_PUMPE_UNTEN, LOW );                        // LOW = Relais EIN
         t0_pumpe = millis();
         zustand = zustand_pumpt;
