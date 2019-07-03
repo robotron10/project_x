@@ -1,4 +1,4 @@
-// Datum: 12.06.2019
+// Datum: 03.07.2019
 // Autor: Stephanie Nawroth, Torsten Graf, Fabian Roth
 //
 // Thema: vollautomatisches Gewächshaus
@@ -19,8 +19,9 @@
 #define ERDFEUCHTESENSOR_1 A0             // Anschlußpin für den Erdfeuchtesensor
 #define ERDFEUCHTESENSOR_2 A1             // Anschlußpin für den Erdfeuchtesensor
 #define HELLIGKEITSSENSOR A2              // 
-#define LIMIT_ERDFEUCHTE A3               // 
-#define LIMIT_TEMPERATUR A4
+#define LIMIT_ERDFEUCHTE_1 A3             // 
+#define LIMIT_ERDFEUCHTE_2 A4
+#define LIMIT_TEMPERATUR A5
 #define TEMPERATURSENSOR_LUEFTER 8        // Anschlußpin für Name  DHT22
 #define RELAIS_LUEFTER 9
 #define RELAIS_HEIZUNG 10
@@ -70,7 +71,8 @@ float limit_luefter = 27.00;                                  // Lufttemperaturw
 #define zustand_warten_durchfeuchtung 2
 int zustand = zustand_warten_zu_trocken;
 
-int taster, hum_erde_1, hum_erde_2, helligkeit;
+int aktueller_taster=LOW, voriger_taster, hum_erde_1, hum_erde_2, helligkeit;
+int displ_nr = 0;
 float temp_luft, hum_luft;
 
 
@@ -81,10 +83,10 @@ float temp_luft, hum_luft;
 //-------------------------------------------------------
 
 // Windows
-LiquidCrystal_I2C lcd(0x3F, 20, 4 );
+//LiquidCrystal_I2C lcd(0x3F, 20, 4 );
 
 // Linux
-//LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 // Temperatur- und Feuchtesensor einrichten (Pin, Typ)
 DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
@@ -101,7 +103,7 @@ DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
 //}
 
 //------------------------------------------------------
-//--- String ausgeben
+//--- String audispl_nrsgeben
 //------------------------------------------------------
 String make_string( String s ) {
   while ( s.length() < 20 ) {
@@ -123,40 +125,82 @@ void update_messwerte() {
 //------------------------------------------------------
 //--- Anzeige aktualisieren
 //------------------------------------------------------
-void update_lcd() {
-  lcd.setCursor(0, 0);                                              // Displayausgabe erste Zeile
+void update_lcd( int nr_display ) {
 
-  lcd.print(
-    make_string(
-      String( "Temperatur:  " + String(temp_luft) + String( (char)223 )
-            )
-    )
-  );
 
-  lcd.setCursor(0, 1);                                              // Displayausgabe zweite Zeile
-  lcd.print(
-    make_string(
-      String( "Luftfeuchte: " + String(hum_luft) + String( (char)37 )
-            )
-    )
-  );
+  switch ( nr_display ) {
 
-  lcd.setCursor(0, 2);                                              // Displayausgabe dritte Zeile
-  lcd.print(
-    make_string(
-      String( "Erdfeuchte1: " + String(hum_erde_1) + String( (char)37 )
-            )
-    )
-  );
+    case 0 : // --- displayinhalt 1
+      lcd.setCursor(0, 0);                                              // Displayausgabe erste Zeile
+      lcd.print(
+        make_string(
+          String( "Temperatur:  " + String(temp_luft) + String( (char)223 )
+                )
+        )
+      );
 
-  lcd.setCursor(0, 3);                                              // Displayausgabe vierte Zeile
-  lcd.print(
-    make_string(
-      String( "Erd_Limit_1: " + String(limit_bodenfeuchte_1) + String( (char)37 )
-            )
-    )
-  );
+      lcd.setCursor(0, 1);                                              // Displayausgabe zweite Zeile
+      lcd.print(
+        make_string(
+          String( "Luftfeuchte: " + String(hum_luft) + String( (char)37 )
+                )
+        )
+      );
 
+      lcd.setCursor(0, 2);                                              // Displayausgabe dritte Zeile
+      lcd.print(
+        make_string(
+          String( "Erdfeuchte1: " + String(hum_erde_1) + String( (char)37 )
+                )
+        )
+      );
+
+      lcd.setCursor(0, 3);                                              // Displayausgabe vierte Zeile
+      lcd.print(
+        make_string(
+          String( "Erdfeuchte2: " + String(hum_erde_2) + String( (char)37 )
+                )
+        )
+      );
+
+      break;
+
+
+    default:    // --- displayinhalt 2
+      lcd.setCursor(0, 0);                                              // Displayausgabe erste Zeile
+      lcd.print(
+        make_string(
+          String( "Einstellparameter:  " )
+                )
+      );
+
+      lcd.setCursor(0, 1);                                              // Displayausgabe zweite Zeile
+      lcd.print(
+        make_string(
+          String( "Temp_Soll : " + String(hum_luft) + String( (char)37 )
+                )
+        )
+      );
+
+      lcd.setCursor(0, 2);                                              // Displayausgabe dritte Zeile
+      lcd.print(
+        make_string(
+          String( "Erd_Soll_1: " + String(limit_bodenfeuchte_1) + String( (char)37 )
+                )
+        )
+      );
+
+      lcd.setCursor(0, 3);                                              // Displayausgabe vierte Zeile
+      lcd.print(
+        make_string(
+          String( "Erd_Soll_2: " + String(limit_bodenfeuchte_2) + String( (char)37 )
+                )
+        )
+      );
+
+      break;
+
+  }
 }
 
 //------------------------------------------------------
@@ -167,8 +211,8 @@ void setup() {
   //  LCD Setup
   //lcd.init();                                                   // Windows
   //lcd.backlight();                                              // Windows
-  //lcd.begin(20, 4);                                             // Linux
-  lcd.begin();                                                    // Linux
+  lcd.begin(20, 4);                                             // Linux
+  //lcd.begin();                                                    // Linux
   lcd.setCursor(0, 0);
   lcd.print("+++ STARTING...  +++");
 
@@ -179,18 +223,20 @@ void setup() {
   hum_erde_1 = analogRead( ERDFEUCHTESENSOR_1 );                  // Lesen der Erdfeuchtigkeit
   hum_erde_2 = analogRead( ERDFEUCHTESENSOR_2 );                  // Lesen der Erdfeuchtigkeit
 
-  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE);
+  //limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
+  //limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
 
-  // Pumpen 
+
+  // Pumpen
   pinMode(RELAIS_PUMPE_UNTEN, OUTPUT);                            // Relais für die Wasserpume
   digitalWrite(RELAIS_PUMPE_UNTEN, HIGH );                        // HIGH = Relais AUS
   pinMode(RELAIS_PUMPE_OBEN, OUTPUT);                             // Relais für die Wasserpume
   digitalWrite(RELAIS_PUMPE_OBEN, HIGH );                         // HIGH = Relais AUS
 
-  // Lüfter 
+  // Lüfter
   pinMode(RELAIS_LUEFTER, OUTPUT);                                // Relais für den Lüfter
   digitalWrite(RELAIS_LUEFTER, HIGH );                            // HIGH = Relais AUS
-  
+
   // Taster
   pinMode(TASTER_PUMPE_UNTEN, INPUT);
 
@@ -203,13 +249,15 @@ void setup() {
 
   // ISR einrichten
   //  attachInterrupt(0, taster_unterbricht, LOW);
-  
+
   t0_heizung = millis();
   t0_luefter = millis();
   t0_display = millis();
   t0_helligkeit = millis();
   t0_temperaturmessung = millis();
   t0_erdfeuchtemessung = millis();
+
+  displ_nr = 0;
 
   zustand = zustand_warten_zu_trocken;
 
@@ -225,17 +273,23 @@ void setup() {
 
 void loop() {
 
-  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE);
+  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
+  limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
 
-  /*  if ( taster == LOW ) and ( digitalRead(TASTER_PUMPE_UNTEN) == HIGH ) {
-    taster == HIGH;
-    }
-  */
+  /********************************( Änderung am Taster )*****************************************************/
+  aktueller_taster = digitalRead(TASTER_PUMPE_UNTEN);
+  if (( voriger_taster == LOW ) and ( aktueller_taster == HIGH)) {
+    displ_nr++;
+    if ( displ_nr > 1 ) displ_nr = 0;
+    t0_display = millis() - dt_display_ms;
+  }
+  voriger_taster = aktueller_taster;
+
 
   /********************************( Display Ausgabe )*****************************************************/
   if ( ( millis() - t0_display ) > dt_display_ms ) {
     t0_display = millis();
-    update_lcd();
+    update_lcd( displ_nr );
   }
 
   /******************************** Messen Temperatur und Feuchtigkeit ***********************************/
@@ -256,7 +310,7 @@ void loop() {
     }
   }
 
-/******************************** Lüfter + Motor Scheibe vorne <--> Temperatursensor DHT22 ****************/
+  /******************************** Lüfter + Motor Scheibe vorne <--> Temperatursensor DHT22 ****************/
   if ( ( millis() - t0_luefter ) > dt_luefter_ms ) {
     t0_luefter = millis();
     if (temp_luft > limit_luefter ) {
@@ -283,16 +337,19 @@ void loop() {
 
   /******************************** REED-Kontakt -> Scheibe offen  ***************************************/
 
- /* 
-  if ( reedkontakt == zu ) {
-    dann führe den Übergangsautomaten aus
-    
-  }
-  
-  */  
-  
-  
   /*
+    if ( reedkontakt == zu ) {
+     dann führe den Übergangsautomaten aus
+
+    }
+
+  */
+
+
+  /******************************** Erdfuchtesensor <--> pumpem oben + unten  ***************************************/
+  /*
+
+
     // --- Übergangsautomat Erdfeuchte:
     1. (warten)
       warten auf "zu trocken", d.h. bis Feuchtigkeit zu niedrig.
@@ -314,6 +371,8 @@ void loop() {
         digitalWrite(RELAIS_PUMPE_UNTEN, LOW );                        // LOW = Relais EIN
         t0_pumpe = millis();
         zustand = zustand_pumpt;
+        lcd.setCursor(19, 3);
+        lcd.print("1");
       }
       break;
 
@@ -322,12 +381,16 @@ void loop() {
         digitalWrite(RELAIS_PUMPE_UNTEN, HIGH );                        // HIGH = Relais AUS
         t0_durchfeuchtung = millis();
         zustand = zustand_warten_durchfeuchtung;
+        lcd.setCursor(19, 3);
+        lcd.print("2");
       }
       break;
 
     case zustand_warten_durchfeuchtung :
       if ( millis() - t0_durchfeuchtung > dt_warten_durchfeuchtung_ms ) {
         zustand = zustand_warten_zu_trocken;
+        lcd.setCursor(19, 3);
+        lcd.print("3");
       }
       break;
   }
