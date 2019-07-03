@@ -71,7 +71,7 @@ float limit_luefter = 27.00;                                  // Lufttemperaturw
 #define zustand_warten_durchfeuchtung 2
 int zustand = zustand_warten_zu_trocken;
 
-int aktueller_taster=LOW, voriger_taster, hum_erde_1, hum_erde_2, helligkeit;
+int aktueller_taster = LOW, voriger_taster, hum_erde_1, hum_erde_2, helligkeit;
 int displ_nr = 0;
 float temp_luft, hum_luft;
 
@@ -223,8 +223,8 @@ void setup() {
   hum_erde_1 = analogRead( ERDFEUCHTESENSOR_1 );                  // Lesen der Erdfeuchtigkeit
   hum_erde_2 = analogRead( ERDFEUCHTESENSOR_2 );                  // Lesen der Erdfeuchtigkeit
 
-  //limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
-  //limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
+  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
+  limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
 
 
   // Pumpen
@@ -279,9 +279,13 @@ void loop() {
   /********************************( Änderung am Taster )*****************************************************/
   aktueller_taster = digitalRead(TASTER_PUMPE_UNTEN);
   if (( voriger_taster == LOW ) and ( aktueller_taster == HIGH)) {
+    t0_display = millis() - dt_display_ms;    
     displ_nr++;
-    if ( displ_nr > 1 ) displ_nr = 0;
-    t0_display = millis() - dt_display_ms;
+    
+    if ( displ_nr > 1 ) {
+      displ_nr = 0;
+    }
+    
   }
   voriger_taster = aktueller_taster;
 
@@ -371,8 +375,6 @@ void loop() {
         digitalWrite(RELAIS_PUMPE_UNTEN, LOW );                        // LOW = Relais EIN
         t0_pumpe = millis();
         zustand = zustand_pumpt;
-        lcd.setCursor(19, 3);
-        lcd.print("1");
       }
       break;
 
@@ -381,16 +383,12 @@ void loop() {
         digitalWrite(RELAIS_PUMPE_UNTEN, HIGH );                        // HIGH = Relais AUS
         t0_durchfeuchtung = millis();
         zustand = zustand_warten_durchfeuchtung;
-        lcd.setCursor(19, 3);
-        lcd.print("2");
       }
       break;
 
     case zustand_warten_durchfeuchtung :
       if ( millis() - t0_durchfeuchtung > dt_warten_durchfeuchtung_ms ) {
         zustand = zustand_warten_zu_trocken;
-        lcd.setCursor(19, 3);
-        lcd.print("3");
       }
       break;
   }
