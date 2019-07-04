@@ -22,6 +22,7 @@
 #define LIMIT_ERDFEUCHTE_1 A3             // 
 #define LIMIT_ERDFEUCHTE_2 A4
 #define LIMIT_TEMPERATUR A5
+#define LIMIT_LUEFTER A6
 #define TEMPERATURSENSOR_LUEFTER 8        // Anschlußpin für Name  DHT22
 #define RELAIS_LUEFTER 9
 #define RELAIS_HEIZUNG 10
@@ -62,31 +63,31 @@ unsigned long dt_helligkeit_ms = 5000;
 int limit_bodenfeuchte_1 = 500;
 int limit_bodenfeuchte_2 = 500;
 int limit_helligkeit = 500;
-float limit_temperatur = 25.00;                               // Lufttemperaturwert -> Heizen
-float limit_luefter = 27.00;                                  // Lufttemperaturwert -> Lüften
+int limit_temperatur = 25;                               // Lufttemperaturwert -> Heizen
+int limit_luefter = 27;                                  // Lufttemperaturwert -> Lüften
 
+int hum_erde_1, hum_erde_2, temp_luft, hum_luft, voriger_taster, helligkeit;
+int hum_erde_1_displ, hum_erde_2_displ, temp_luft_displ, hum_luft_displ;
+int limit_bodenfeuchte_1_displ, limit_bodenfeuchte_2_displ, limit_temperatur_displ, limit_luefter_displ;
 
 #define zustand_warten_zu_trocken  0
 #define zustand_pumpt 1
 #define zustand_warten_durchfeuchtung 2
 int zustand = zustand_warten_zu_trocken;
 
-int aktueller_taster = LOW, voriger_taster, hum_erde_1, hum_erde_2, helligkeit;
+int aktueller_taster = LOW;
 int displ_nr = 0;
-float temp_luft, hum_luft;
 
 
 //-------------------------------------------------------
 // LCD per I2C und die Adresse 0x37
-// Pin 4 -> SDA
-// Pin 5 -> SCL
 //-------------------------------------------------------
 
-// Windows
-//LiquidCrystal_I2C lcd(0x3F, 20, 4 );
+// Windows, auch Linux mit folgender lib: https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
+LiquidCrystal_I2C lcd(0x3F, 20, 4 );
 
 // Linux
-LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+//LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 // Temperatur- und Feuchtesensor einrichten (Pin, Typ)
 DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
@@ -103,7 +104,7 @@ DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
 //}
 
 //------------------------------------------------------
-//--- String audispl_nrsgeben
+//--- String ausgeben
 //------------------------------------------------------
 String make_string( String s ) {
   while ( s.length() < 20 ) {
@@ -120,6 +121,26 @@ void update_messwerte() {
   hum_erde_2 = analogRead( ERDFEUCHTESENSOR_2 );                  // Lesen der Erdfeuchtigkeit, Werte zw. 0..1023
   hum_luft = dht.readHumidity();                                  // Lesen der Luftfeuchtigkeit und speichern in die Variable hum_luft
   temp_luft = dht.readTemperature();                              // Lesen der Temperatur in °C und speichern in die Variable temp_luft
+
+  // Werte für das Display mappen
+  hum_erde_1_displ = map(hum_erde_1, 0, 1023, 0, 100);
+  hum_erde_2_displ = map(hum_erde_2, 0, 1023, 0, 100);
+}
+
+//------------------------------------------------------
+//--- Limits einlesen
+//------------------------------------------------------
+void update_limits() {
+  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
+  limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
+  limit_temperatur = analogRead(LIMIT_TEMPERATUR);
+  limit_luefter = analogRead(LIMIT_LUEFTER);
+
+  // Werte für das Display mappen
+  limit_bodenfeuchte_1_displ = map(limit_bodenfeuchte_1, 0, 1023, 0, 100);
+  limit_bodenfeuchte_2_displ = map(limit_bodenfeuchte_2, 0, 1023, 0, 100);
+  limit_temperatur_displ = map(limit_temperatur, 0, 1023, 100, 0);
+  limit_luefter_displ = map(limit_temperatur, 0, 1023, 0, 100);
 }
 
 //------------------------------------------------------
@@ -130,16 +151,32 @@ void update_lcd( int nr_display ) {
 
   switch ( nr_display ) {
 
-    case 0 : // --- displayinhalt 1
+    case 0 :                                                            // Displayinhalt 1
       lcd.setCursor(0, 0);                                              // Displayausgabe erste Zeile
       lcd.print(
         make_string(
-          String( "Temperatur:  " + String(temp_luft) + String( (char)223 )
+          String( "Ist_Erd_1:   " + String(hum_erde_1_displ) + String( (char)37 )
                 )
         )
       );
 
       lcd.setCursor(0, 1);                                              // Displayausgabe zweite Zeile
+      lcd.print(
+        make_string(
+          String( "Ist_Erd_2:   " + String(hum_erde_2_displ) + String( (char)37 )
+                )
+        )
+      );
+
+      lcd.setCursor(0, 2);                                              // Displayausgabe dritte Zeile
+      lcd.print(
+        make_string(
+          String( "Ist_Temp:    " + String(temp_luft) + String( (char)223 )
+                )
+        )
+      );
+
+      lcd.setCursor(0, 3);                                              // Displayausgabe vierte Zeile
       lcd.print(
         make_string(
           String( "Luftfeuchte: " + String(hum_luft) + String( (char)37 )
@@ -147,37 +184,22 @@ void update_lcd( int nr_display ) {
         )
       );
 
-      lcd.setCursor(0, 2);                                              // Displayausgabe dritte Zeile
-      lcd.print(
-        make_string(
-          String( "Erdfeuchte1: " + String(hum_erde_1) + String( (char)37 )
-                )
-        )
-      );
-
-      lcd.setCursor(0, 3);                                              // Displayausgabe vierte Zeile
-      lcd.print(
-        make_string(
-          String( "Erdfeuchte2: " + String(hum_erde_2) + String( (char)37 )
-                )
-        )
-      );
-
       break;
 
 
-    default:    // --- displayinhalt 2
+    default:                                                            // Displayinhalt 2
       lcd.setCursor(0, 0);                                              // Displayausgabe erste Zeile
       lcd.print(
         make_string(
-          String( "Einstellparameter:  " )
+          String( "Soll_Erd_1: " + String(limit_bodenfeuchte_1_displ) + String( (char)37 )
                 )
+        )
       );
 
       lcd.setCursor(0, 1);                                              // Displayausgabe zweite Zeile
       lcd.print(
         make_string(
-          String( "Temp_Soll : " + String(hum_luft) + String( (char)37 )
+          String( "Soll_Erd_2: " + String(limit_bodenfeuchte_2_displ) + String( (char)37 )
                 )
         )
       );
@@ -185,7 +207,7 @@ void update_lcd( int nr_display ) {
       lcd.setCursor(0, 2);                                              // Displayausgabe dritte Zeile
       lcd.print(
         make_string(
-          String( "Erd_Soll_1: " + String(limit_bodenfeuchte_1) + String( (char)37 )
+          String( "Soll_Heiz : " + String(limit_temperatur_displ) + String( (char)223 )
                 )
         )
       );
@@ -193,7 +215,7 @@ void update_lcd( int nr_display ) {
       lcd.setCursor(0, 3);                                              // Displayausgabe vierte Zeile
       lcd.print(
         make_string(
-          String( "Erd_Soll_2: " + String(limit_bodenfeuchte_2) + String( (char)37 )
+          String( "Soll_Fan  : " + String(limit_luefter_displ) + String( (char)223 )
                 )
         )
       );
@@ -211,21 +233,25 @@ void setup() {
   //  LCD Setup
   //lcd.init();                                                   // Windows
   //lcd.backlight();                                              // Windows
-  lcd.begin(20, 4);                                             // Linux
-  //lcd.begin();                                                    // Linux
+  //lcd.begin(20, 4);                                             // Linux
+  lcd.begin();                                                    // Linux
   lcd.setCursor(0, 0);
   lcd.print("+++ STARTING...  +++");
 
   // Temperatursensor Setup
   dht.begin();
-  temp_luft = dht.readTemperature();                              // Lesen der Temperatur in °C und speichern in die Variable temp_luft
-  hum_luft = dht.readHumidity();                                  // Lesen der Luftfeuchtigkeit und speichern in die Variable hum_luft
-  hum_erde_1 = analogRead( ERDFEUCHTESENSOR_1 );                  // Lesen der Erdfeuchtigkeit
-  hum_erde_2 = analogRead( ERDFEUCHTESENSOR_2 );                  // Lesen der Erdfeuchtigkeit
+  //hum_erde_1 = analogRead( ERDFEUCHTESENSOR_1 );                  // Lesen der Erdfeuchtigkeit
+  //hum_erde_2 = analogRead( ERDFEUCHTESENSOR_2 );                  // Lesen der Erdfeuchtigkeit
+  //hum_luft = dht.readHumidity();                                  // Lesen der Luftfeuchtigkeit und speichern in die Variable hum_luft
+  //temp_luft = dht.readTemperature();                              // Lesen der Temperatur in °C und speichern in die Variable temp_luft
+  update_messwerte();
+  
 
-  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
-  limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
-
+  //limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
+  //limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
+  //limit_temperatur = analogRead(LIMIT_TEMPERATUR);
+  //limit_luefter = analogRead(LIMIT_LUEFTER);
+  update_limits();
 
   // Pumpen
   pinMode(RELAIS_PUMPE_UNTEN, OUTPUT);                            // Relais für die Wasserpume
@@ -273,8 +299,11 @@ void setup() {
 
 void loop() {
 
-  limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
-  limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
+  //limit_bodenfeuchte_1 = analogRead(LIMIT_ERDFEUCHTE_1);
+  //limit_bodenfeuchte_2 = analogRead(LIMIT_ERDFEUCHTE_2);
+  //limit_temperatur = analogRead(LIMIT_TEMPERATUR);
+  //limit_luefter = analogRead(LIMIT_LUEFTER);
+  update_limits();
 
   /********************************( Änderung am Taster )*****************************************************/
   aktueller_taster = digitalRead(TASTER_PUMPE_UNTEN);
