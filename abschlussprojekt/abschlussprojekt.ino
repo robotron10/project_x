@@ -68,15 +68,17 @@ unsigned long dt_luefter_ms = 5000;
 unsigned long t0_helligkeit;
 unsigned long dt_helligkeit_ms = 5000;
 
-//int limit_bodenfeuchte_1_adc = 500;
-//int limit_bodenfeuchte_2_adc = 500;
+//int limit_feuchte_1_adc = 500;
+//int limit_feuchte_2_adc = 500;
 int limit_helligkeit = 500;
-//int limit_temperatur_adc = 25;                               // Lufttemperaturwert -> Heizen
-//int limit_luefter_adc = 27;                                  // Lufttemperaturwert -> Lüften
+//int limit_temp_adc = 25;                               // Lufttemperaturwert -> Heizen
 
-int hum_erde_1_adc, hum_erde_2_adc, temp_luft, hum_luft, voriger_taster, helligkeit;
-int limit_bodenfeuchte_1_adc, limit_bodenfeuchte_2_adc, limit_temperatur_adc, limit_luefter_adc;
-//int hum_erde_1_prozent, hum_erde_2_prozent, limit_bodenfeuchte_1_prozent, limit_bodenfeuchte_2_prozent, limit_temperatur_prozent, limit_luefter_prozent;
+//int limit_luefter_adc = 27;                                  // Lufttemperaturwert -> Lüften
+int limit_luefter_C = 15;
+
+int hum_erde_1_adc, hum_erde_2_adc, temp_luft_C, hum_luft, voriger_taster, helligkeit;
+int limit_feuchte_1_adc, limit_feuchte_2_adc, limit_temp_adc, limit_temp_C, limit_luefter_adc;
+//int hum_erde_1_prozent, hum_erde_2_prozent, limit_feuchte_1_prozent, limit_feuchte_2_prozent, limit_temp_prozent, limit_luefter_prozent;
 
 // für Übergangsautomat
 #define zustand_warten_zu_trocken  0
@@ -130,7 +132,7 @@ void update_messwerte() {
   hum_erde_1_adc = analogRead( ERDFEUCHTESENSOR_1 );                  // Lesen der Erdfeuchtigkeit, Werte zw. 0..1023
   hum_erde_2_adc = analogRead( ERDFEUCHTESENSOR_2 );                  // Lesen der Erdfeuchtigkeit, Werte zw. 0..1023
   hum_luft = dht.readHumidity();                                      // Lesen der Luftfeuchtigkeit und speichern in die Variable hum_luft
-  temp_luft = dht.readTemperature();                                  // Lesen der Temperatur in °C und speichern in die Variable temp_luft
+  temp_luft_C = dht.readTemperature();                                  // Lesen der Temperatur in °C und speichern in die Variable temp_luft
 
   // Werte für das Display mappen
   //hum_erde_1_prozent = map(hum_erde_1_adc, 0, 1023, 0, 100);
@@ -142,15 +144,14 @@ void update_messwerte() {
 //--- Limits einlesen
 //------------------------------------------------------
 void update_limits() {
-  limit_bodenfeuchte_1_adc = analogRead(LIMIT_ERDFEUCHTE_1);
-  limit_bodenfeuchte_2_adc = analogRead(LIMIT_ERDFEUCHTE_2);
-  limit_temperatur_adc = analogRead(LIMIT_TEMPERATUR);
-  limit_luefter_adc = analogRead(LIMIT_LUEFTER);
+  limit_feuchte_1_adc = analogRead(LIMIT_ERDFEUCHTE_1);
+  limit_feuchte_2_adc = analogRead(LIMIT_ERDFEUCHTE_2);
 
-  //limit_bodenfeuchte_1_prozent = map(limit_bodenfeuchte_1_adc, 0, 1023, 0, 100);
-  //limit_bodenfeuchte_2_prozent = map(limit_bodenfeuchte_2_adc, 0, 1023, 0, 100);
-  //limit_temperatur_prozent = map(limit_temperatur_adc, 0, 1023, 100, 0);
-  //limit_luefter_prozent = map(limit_temperatur_adc, 0, 1023, 0, 100);
+  limit_temp_adc = analogRead(LIMIT_TEMPERATUR);
+  
+  limit_luefter_adc = analogRead(LIMIT_LUEFTER);
+  limit_luefter_C = map( limit_luefter_adc, 0, 1023, 15, 35 );
+
 }
 
 //------------------------------------------------------
@@ -163,14 +164,23 @@ bool tuer_zu() {
 //------------------------------------------------------
 //--- Anzeige aktualisieren
 //------------------------------------------------------
-void update_lcd( int nr_display, int hum_erde_1_adc, int hum_erde_2_adc, int limit_bodenfeuchte_1_adc, int limit_bodenfeuchte_2_adc, int limit_temperatur_adc, int limit_luefter_adc ) {
-// void update_lcd( int nr_display ) {
+void update_lcd( 
+  int nr_display, 
+  int temp_luft_C, 
+  int hum_luft,
+  int hum_erde_1_adc, 
+  int hum_erde_2_adc, 
+  int limit_feuchte_1_adc, 
+  int limit_feuchte_2_adc, 
+  int limit_temp_adc, 
+  int limit_luefter_adc ) {
+    
 
   int hum_erde_1_prozent = map(hum_erde_1_adc, 0, 1023, 0, 100);
   int hum_erde_2_prozent = map(hum_erde_2_adc, 0, 1023, 0, 100);
-  int limit_bodenfeuchte_1_prozent = map(limit_bodenfeuchte_1_adc, 0, 1023, 0, 100);
-  int limit_bodenfeuchte_2_prozent = map(limit_bodenfeuchte_2_adc, 0, 1023, 0, 100);
-  int limit_temperatur_prozent = map(limit_temperatur_adc, 0, 1023, 100, 0);
+  int limit_feuchte_1_prozent = map(limit_feuchte_1_adc, 0, 1023, 0, 100);
+  int limit_feuchte_2_prozent = map(limit_feuchte_2_adc, 0, 1023, 0, 100);
+  int limit_temp_prozent = map(limit_temp_adc, 0, 1023, 100, 0);
   int limit_luefter_prozent = map(limit_luefter_adc, 0, 1023, 0, 100);
   
   switch ( nr_display ) {
@@ -195,7 +205,7 @@ void update_lcd( int nr_display, int hum_erde_1_adc, int hum_erde_2_adc, int lim
       lcd.setCursor(0, 2);                                              // Displayausgabe dritte Zeile
       lcd.print(
         make_string(
-          String( "Ist_Temp:    " + String(temp_luft) + String( (char)223 )
+          String( "Ist_Temp:    " + String(temp_luft_C) + String( (char)223 )
                 )
         )
       );
@@ -215,7 +225,7 @@ void update_lcd( int nr_display, int hum_erde_1_adc, int hum_erde_2_adc, int lim
       lcd.setCursor(0, 0);                                              // Displayausgabe erste Zeile
       lcd.print(
         make_string(
-          String( "Soll_Erd_1: " + String(limit_bodenfeuchte_1_prozent) + String( (char)37 )
+          String( "Soll_Erd_1: " + String(limit_feuchte_1_prozent) + String( (char)37 )
                 )
         )
       );
@@ -223,7 +233,7 @@ void update_lcd( int nr_display, int hum_erde_1_adc, int hum_erde_2_adc, int lim
       lcd.setCursor(0, 1);                                              // Displayausgabe zweite Zeile
       lcd.print(
         make_string(
-          String( "Soll_Erd_2: " + String(limit_bodenfeuchte_2_prozent) + String( (char)37 )
+          String( "Soll_Erd_2: " + String(limit_feuchte_2_prozent) + String( (char)37 )
                 )
         )
       );
@@ -231,7 +241,7 @@ void update_lcd( int nr_display, int hum_erde_1_adc, int hum_erde_2_adc, int lim
       lcd.setCursor(0, 2);                                              // Displayausgabe dritte Zeile
       lcd.print(
         make_string(
-          String( "Soll_Heiz : " + String(limit_temperatur_prozent) + String( (char)223 )
+          String( "Soll_Heiz : " + String(limit_temp_prozent) + String( (char)223 )
                 )
         )
       );
@@ -336,7 +346,17 @@ void loop() {
   /********************************( Display Ausgabe )*****************************************************/
   if ( ( millis() - t0_display ) > dt_display_ms ) {
     t0_display = millis();
-    update_lcd( displ_nr, hum_erde_1_adc, hum_erde_2_adc, limit_bodenfeuchte_1_adc, limit_bodenfeuchte_2_adc, limit_temperatur_adc, limit_luefter_adc );
+    update_lcd( 
+       displ_nr,
+       temp_luft_C,
+       hum_luft,
+       hum_erde_1_adc,
+       hum_erde_2_adc,
+       limit_feuchte_1_adc,
+       limit_feuchte_2_adc, 
+       limit_temp_adc, 
+       limit_luefter_adc 
+       );
   }
 
   /******************************** Messen Temperatur und Feuchtigkeit ***********************************/
@@ -349,7 +369,7 @@ void loop() {
   /******************************** Heizung <--> Temperatursensor DHT22 ***********************************/
   if ( ( millis() - t0_heizung ) > dt_heizung_ms ) {
     t0_heizung = millis();
-    if (temp_luft < limit_temperatur_adc ) {                                  // wenn Lufttemperatur kälter als eingesteller Wert, dann
+    if (temp_luft_C < limit_temp_C ) {                                  // wenn Lufttemperatur kälter als eingesteller Wert, dann
       digitalWrite(RELAIS_HEIZUNG, LOW );                                 // heizen
     }
     else {                                                                // sonst
@@ -360,7 +380,7 @@ void loop() {
   /******************************** Lüfter + Motor Scheibe vorne <--> Temperatursensor DHT22 ****************/
   if ( ( millis() - t0_luefter ) > dt_luefter_ms ) {
     t0_luefter = millis();
-    if (temp_luft > limit_luefter_adc ) {                                     // wenn Lufttemperatur wärmer als eingesteller Wert, dann
+    if (temp_luft_C > limit_luefter_C ) {                                     // wenn Lufttemperatur wärmer als eingesteller Wert, dann
       digitalWrite(RELAIS_LUEFTER, LOW );                                 // Lüfter einschalten (LOW = Relais EIN)
       //digitalWrite(RELAIS_MOTOR_FENSTER, LOW );                           // und Fenster öffen !!! WIRD SO NICHT FUNKTIONIEREN !!!
     }
@@ -404,7 +424,7 @@ void loop() {
 
     case zustand_warten_zu_trocken :
       //--- im Zustand bleiben, bis if() erfüllt -> neuer ZUstand
-      if (( hum_erde_1_adc > limit_bodenfeuchte_1_adc ) and ( tuer_zu() )) {          // wenn Erdfeuchte1 sehr trocken und Tür zu, dann
+      if (( hum_erde_1_adc > limit_feuchte_1_adc ) and ( tuer_zu() )) {          // wenn Erdfeuchte1 sehr trocken und Tür zu, dann
         digitalWrite(RELAIS_PUMPE_UNTEN, LOW );                                       // Pumpe an und wässern (LOW = Relais EIN)
         t0_pumpe_1 = millis();                                                        // neue Zeit setzen
         zustand_1 = zustand_pumpt;                                                    // neuen Zustand setzen
@@ -431,7 +451,7 @@ void loop() {
 
     case zustand_warten_zu_trocken :
       //--- im Zustand bleiben, bis if() erfüllt -> neuer ZUstand
-      if (( hum_erde_2_adc > limit_bodenfeuchte_2_adc) and ( tuer_zu() )) {           // wenn Erdfeuchte2 sehr trocken, dann
+      if (( hum_erde_2_adc > limit_feuchte_2_adc) and ( tuer_zu() )) {           // wenn Erdfeuchte2 sehr trocken, dann
         digitalWrite(RELAIS_PUMPE_OBEN, LOW );                                        // Pumpe an und wässern (LOW = Relais EIN)
         t0_pumpe_2 = millis();                                                        // neue Zeit setzen
         zustand_2 = zustand_pumpt;                                                    // neuen Zustand setzen
