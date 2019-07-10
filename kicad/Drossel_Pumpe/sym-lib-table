@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name Drossel_Pumpe-rescue)(type Legacy)(uri ${KIPRJMOD}/Drossel_Pumpe-rescue.lib)(options "")(descr ""))
+)

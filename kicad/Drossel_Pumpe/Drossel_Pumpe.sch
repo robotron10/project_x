@@ -1,0 +1,111 @@
+EESchema Schematic File Version 4
+LIBS:Drossel_Pumpe-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title "HF-Entstörung Wasserpumpe"
+Date "2019-07-10"
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Drossel_Pumpe-rescue:L L1
+U 1 1 5D25B130
+P 6400 2700
+F 0 "L1" V 6350 2700 50  0000 C CNN
+F 1 "100uH" V 6475 2700 50  0000 C CNN
+F 2 "" H 6400 2700 50  0001 C CNN
+F 3 "" H 6400 2700 50  0001 C CNN
+	1    6400 2700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Drossel_Pumpe-rescue:C C1
+U 1 1 5D25B14C
+P 6850 2950
+F 0 "C1" H 6875 3050 50  0000 L CNN
+F 1 "100nF" H 6875 2850 50  0000 L CNN
+F 2 "" H 6888 2800 50  0001 C CNN
+F 3 "" H 6850 2950 50  0001 C CNN
+	1    6850 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Drossel_Pumpe-rescue:L 100uH1
+U 1 1 5D25B187
+P 6400 3200
+F 0 "100uH1" V 6350 3200 50  0000 C CNN
+F 1 "L" V 6475 3200 50  0000 C CNN
+F 2 "" H 6400 3200 50  0001 C CNN
+F 3 "" H 6400 3200 50  0001 C CNN
+	1    6400 3200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector_Generic:Conn_02x01 J1
+U 1 1 5D25E2D9
+P 5850 2900
+F 0 "J1" V 5854 2980 50  0000 L CNN
+F 1 "Conn_02x01" V 5945 2980 50  0000 L CNN
+F 2 "" H 5850 2900 50  0001 C CNN
+F 3 "~" H 5850 2900 50  0001 C CNN
+	1    5850 2900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5850 2700 6250 2700
+Wire Wire Line
+	6550 2700 6850 2700
+Wire Wire Line
+	6850 3200 6550 3200
+Wire Wire Line
+	5850 3200 6250 3200
+Wire Wire Line
+	6850 2800 6850 2700
+Wire Wire Line
+	6850 3100 6850 3200
+$Comp
+L Motor:Motor_DC M1
+U 1 1 5D262970
+P 7350 2900
+F 0 "M1" H 7508 2896 50  0000 L CNN
+F 1 "Pumpe" H 7508 2805 50  0000 L CNN
+F 2 "" H 7350 2810 50  0001 C CNN
+F 3 "~" H 7350 2810 50  0001 C CNN
+	1    7350 2900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7350 2700 6850 2700
+Connection ~ 6850 2700
+Wire Wire Line
+	7350 3200 6850 3200
+Connection ~ 6850 3200
+$Comp
+L Device:D D1
+U 1 1 5D268645
+P 8000 2950
+F 0 "D1" V 7954 3029 50  0000 L CNN
+F 1 "1N4148" V 8045 3029 50  0000 L CNN
+F 2 "" H 8000 2950 50  0001 C CNN
+F 3 "~" H 8000 2950 50  0001 C CNN
+	1    8000 2950
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7350 2700 8000 2700
+Wire Wire Line
+	8000 2700 8000 2800
+Connection ~ 7350 2700
+Wire Wire Line
+	8000 3100 8000 3200
+Wire Wire Line
+	8000 3200 7350 3200
+Connection ~ 7350 3200
+$EndSCHEMATC
