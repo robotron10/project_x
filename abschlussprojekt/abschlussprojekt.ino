@@ -1,4 +1,4 @@
-// Datum: 16.08.2019
+// Datum: 09.09.2019
 // Autor: Stephanie Nawroth, Torsten Graf, Fabian Roth
 //
 // Thema: vollautomatisches Gewächshaus
@@ -13,16 +13,16 @@
 //-------------------------------------------------------
 
 //  digital
+#define DHTTYPE DHT22                                                                             //  Typ des Temperatursensors  
+#define TASTER_DISPLAY 2                                                                          //  Anschlußpin Taster Display umschalten (Interrupt-PIN)
 #define RELAIS_PUMPE_OBEN 4                                                                       //  Anschlußpin Relais 1 Wasserpumpe oben
 #define RELAIS_PUMPE_UNTEN 5                                                                      //  Anschlußpin Relais 2 Wasserpumpe unten
 #define RELAIS_LUEFTER 6                                                                          //  Anschlußpin Relais 3 Lüfter
 #define RELAIS_HEIZUNG 7                                                                          //  Anschlußpin Relais 4 Heizfolie
 #define RELAIS_UV_LED 8                                                                           //  Anschlußpin Relais 5 Licht (LED-Streifen)
-#define DHTTYPE DHT22                                                                             //  Typ des Temperatursensors  
 #define TEMPERATURSENSOR_LUEFTER 9                                                                //  Anschlußpin Temperatursensor (DHT22)
 #define HELLIGKEITSSENSOR_UV_LED 10                                                               //  Anschlußpin Helligkeitssensor
 #define REEDKONTAKT 11                                                                            //  Anschlußpin REED-Kontakt
-#define TASTER_DISPLAY 2                                                                          //  Anschlußpin Taster Display umschalten (Interrupt-PIN)
 
 // analog
 #define ERDFEUCHTESENSOR_1 A0                                                                     //  Anschlußpin Erdfeuchtesensor 1
@@ -400,16 +400,14 @@ void loop() {
     }
   }
 
-  /******************************** Lüfter + Motor Scheibe vorne <--> Temperatursensor DHT22 ****************/
+  /******************************** Lüfter <--> Temperatursensor DHT22 ************************************/
   if ( ( millis() - t0_luefter ) > dt_luefter_ms ) {
     t0_luefter = millis();
     if (temp_luft_C > limit_luefter_C ) {                                                     //  wenn Lufttemperatur wärmer als eingesteller Wert, dann
       digitalWrite(RELAIS_LUEFTER, LOW );                                                     //  Lüfter einschalten (LOW = Relais EIN)
-      //digitalWrite(RELAIS_MOTOR_FENSTER, LOW );                                             //  und Fenster öffen !!! WIRD SO NICHT FUNKTIONIEREN !!!
     }
     else {                                                                                    //  sonst
       digitalWrite(RELAIS_LUEFTER, HIGH );                                                    //  Lüfter ausschalten (High = Relais AUS)
-      //digitalWrite(RELAIS_MOTOR_FENSTER, HIGH );                                            //  und Fenster schließen !!! WIRD SO NICHT FUNKTIONIEREN !!!
     }
   }
  
