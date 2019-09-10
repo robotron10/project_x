@@ -1,4 +1,4 @@
-// Datum: 09.09.2019
+// Datum: 10.09.2019
 // Autor: Stephanie Nawroth, Torsten Graf, Fabian Roth
 //
 // Thema: vollautomatisches Gewächshaus
@@ -18,8 +18,8 @@
 #define RELAIS_PUMPE_OBEN 4                                                                       //  Anschlußpin Relais 1 Wasserpumpe oben
 #define RELAIS_PUMPE_UNTEN 5                                                                      //  Anschlußpin Relais 2 Wasserpumpe unten
 #define RELAIS_LUEFTER 6                                                                          //  Anschlußpin Relais 3 Lüfter
-#define RELAIS_HEIZUNG 7                                                                          //  Anschlußpin Relais 4 Heizfolie
-#define RELAIS_UV_LED 8                                                                           //  Anschlußpin Relais 5 Licht (LED-Streifen)
+#define RELAIS_UV_LED 7                                                                           //  Anschlußpin Relais 4 Licht (LED-Streifen)
+#define RELAIS_HEIZUNG 8                                                                          //  Anschlußpin Relais 5 Heizfolie
 #define TEMPERATURSENSOR_LUEFTER 9                                                                //  Anschlußpin Temperatursensor (DHT22)
 #define HELLIGKEITSSENSOR_UV_LED 10                                                               //  Anschlußpin Helligkeitssensor
 #define REEDKONTAKT 11                                                                            //  Anschlußpin REED-Kontakt
