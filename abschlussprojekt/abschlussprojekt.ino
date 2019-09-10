@@ -97,12 +97,15 @@ int displ_nr = 0;
 //-------------------------------------------------------
 
 // Windows, auch Linux mit folgender lib: https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
+// mkdir ~/sketchbook/libraries/LiquidCrystal_I2C_master
+// cp ~/Downloads/Arduino-LiquidCrystal-I2C-library-master ~/sketchbook/libraries/LiquidCrystal_I2C_master/
+// IDE neu starten
 LiquidCrystal_I2C lcd(0x3F, 20, 4 );
 
 // Linux
 //LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
-// Temperatur- und Feuchtesensor einrichten (Pin, Typ)
+// Temperatur- und Feuchtesensor einrichten (Pin, Typ) Linux: https://github.com/adafruit/DHT-sensor-library
 DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
 
 //-------------------------------------------------------
