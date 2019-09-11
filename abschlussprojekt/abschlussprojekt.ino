@@ -319,6 +319,10 @@ void setup() {
   // Taster
   pinMode(TASTER_DISPLAY, INPUT);
 
+  // REED-Kontakt
+  pinMode(REEDKONTAKT, INPUT);                                                                  //  REED-Kontakt als Eingang
+  digitalWrite(REEDKONTAKT, HIGH );                                                             //  HIGH = Relais AUS
+
   // Relais Heizung
   pinMode(RELAIS_HEIZUNG, OUTPUT);                                                              //  Relais als Ausgang
   digitalWrite(RELAIS_HEIZUNG, HIGH );                                                          //  HIGH = Relais AUS
