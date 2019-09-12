@@ -205,12 +205,12 @@ $EndComp
 Text Notes 1100 7100 0    157  Italic 0
 Stecker:\nTorsten -> Männchen, Male\nFabian -> Weibchen, Female
 Text Notes 700  5250 0    79   ~ 0
-Leistung:\nLüfter  -> 12V/0,11A\nHeizung -> 12V, 55W\nLEDs   -> sehr wenig\nPumpe -> 3-5V/100-200mA\n
+Leistung:\nLüfter  -> 12V/0,11A\nHeizung -> 12V, 55W\nLEDs   -> rot 12V/80mA; blau 12V/80mA\nPumpe -> 3-5V/100-200mA\n
 $Comp
-L Connector:DB15_Female J?
+L Connector:DB15_Female J2
 U 1 1 5D775ECC
 P 5100 4950
-F 0 "J?" H 5007 3958 50  0000 C CNN
+F 0 "J2" H 5007 3958 50  0000 C CNN
 F 1 "DB15_Female" H 5007 4049 50  0000 C CNN
 F 2 "" H 5100 4950 50  0001 C CNN
 F 3 " ~" H 5100 4950 50  0001 C CNN

@@ -205,7 +205,7 @@ $EndComp
 Text Notes 1100 7100 0    157  Italic 0
 Stecker:\nTorsten -> Männchen, Male\nFabian -> Weibchen, Female
 Text Notes 700  5250 0    79   ~ 0
-Leistung:\nLüfter  -> 12V/0,11A\nHeizung -> 12V, 55W\nLEDs   -> sehr wenig\nPumpe -> 3-5V/100-200mA\n
+Leistung:\nLüfter  -> 12V/0,11A\nHeizung -> 12V/4,5A  (55W)\nLEDs   -> rot 12V/80mA; blau 12V/80mA\nPumpe -> 3-5V/100-200mA\n
 $Comp
 L Connector:DB15_Female J2
 U 1 1 5D775ECC

@@ -328,7 +328,14 @@ void setup() {
   digitalWrite(RELAIS_HEIZUNG, HIGH );                                                          //  HIGH = Relais AUS
 
   // Helligkeitssensor
-  helligkeit = analogRead(HELLIGKEITSSENSOR);
+  pinMode(HELLIGKEITSSENSOR_UV_LED, INPUT);                                                     //  Helligkeitssensor als Eingang
+  digitalWrite(HELLIGKEITSSENSOR_UV_LED, LOW);                                                  //  Startwert AUS
+  //helligkeit = analogRead(HELLIGKEITSSENSOR);                                                   //  Schwelle Helligkeit
+
+  // Relais LEDs
+  pinMode(RELAIS_UV_LED, OUTPUT);                                                               //  Relais als Ausgang
+  digitalWrite(RELAIS_UV_LED, HIGH);                                                            //  HIGH = Relais AUS
+  
 
   // ISR einrichten
   //  attachInterrupt(0, taster_unterbricht, LOW);
@@ -349,7 +356,6 @@ void setup() {
 
   lcd.setCursor(0, 1); // Spalte, Zeile
   lcd.print("+++ ...COMPLETE! +++");
-
 
   
 }
@@ -425,8 +431,10 @@ void loop() {
   /******************************** LED-Licht <--> Helligkeitssensor *************************************/
   if ( ( millis() - t0_helligkeit ) > dt_helligkeit_ms ) {
     t0_helligkeit = millis();
-    if (helligkeit > limit_helligkeit ) {                                                     //  wenn dunkel, dann:
-      digitalWrite(RELAIS_UV_LED, LOW );                                                      //  Licht anschalten (LOW = Relais EIN)
+    helligkeit = digitalRead( HELLIGKEITSSENSOR_UV_LED );
+  //  if (helligkeit > limit_helligkeit ) {                                                   //  wenn dunkel, dann:
+    if ( helligkeit == HIGH ) {
+      digitalWrite(RELAIS_UV_LED, LOW );                                                      //  Licht anschalten (LOW = Relais EIN) 
     }
     else {                                                                                    //  sonst:
       digitalWrite(RELAIS_UV_LED, HIGH );                                                     //  Licht ausschalten (High = Relais AUS)
