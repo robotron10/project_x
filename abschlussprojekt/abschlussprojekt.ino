@@ -28,7 +28,7 @@
 #define RELAIS_UV_LED 7                                                                           //  Anschlußpin Relais 4 Licht (LED-Streifen)
 #define RELAIS_HEIZUNG 8                                                                          //  Anschlußpin Relais 5 Heizfolie
 #define TEMPERATURSENSOR_LUEFTER 9                                                                //  Anschlußpin Temperatursensor (DHT22)
-#define HELLIGKEITSSENSOR_UV_LED 10                                                               //  Anschlußpin Helligkeitssensor
+#define HELLIGKEITSSENSOR 10                                                                      //  Anschlußpin Helligkeitssensor für LED-Steuerung
 #define REEDKONTAKT 11                                                                            //  Anschlußpin REED-Kontakt
 
 // analog
@@ -36,9 +36,8 @@
 #define ERDFEUCHTESENSOR_2 A1                                                                     //  Anschlußpin Erdfeuchtesensor 2
 #define LIMIT_ERDFEUCHTE_1 A2                                                                     //  Anschlußpin Poti 1
 #define LIMIT_ERDFEUCHTE_2 A3                                                                     //  Anschlußpin Poti 2
-#define LIMIT_TEMPERATUR A4                                                                       //  Anschlußpin Poti 3
+#define LIMIT_TEMPERATUR A6                                                                       //  Anschlußpin Poti 3
 #define LIMIT_LUEFTER A5                                                                          //  Anschlußpin Poti 4
-#define HELLIGKEITSSENSOR A6                                                                      //  Anschlußpin Helligkeitssensor
 
 //-------------------------------------------------------
 //--- Variablen
@@ -84,7 +83,7 @@ int limit_helligkeit = 500;
 //int limit_luefter_adc = 27;                                                                     //  Lufttemperaturwert -> Lüften
 int limit_luefter_C = 15;
 
-int hum_erde_1_adc, hum_erde_2_adc, temp_luft_C, hum_luft, voriger_taster, helligkeit;
+int hum_erde_1_adc, hum_erde_2_adc, temp_luft_C, hum_luft, voriger_taster;
 int limit_feuchte_1_adc, limit_feuchte_2_adc, limit_temp_adc, limit_temp_C, limit_luefter_adc;
 //int hum_erde_1_prozent, hum_erde_2_prozent, limit_feuchte_1_prozent, limit_feuchte_2_prozent, limit_temp_prozent, limit_luefter_prozent;
 
@@ -142,10 +141,6 @@ void update_messwerte() {
   hum_luft = dht.readHumidity();                                                                //  Lesen der Luftfeuchtigkeit und speichern in die Variable hum_luft
   temp_luft_C = dht.readTemperature();                                                          //  Lesen der Temperatur in °C und speichern in die Variable temp_luft
 
-  // Werte für das Display mappen
-  //hum_erde_1_prozent = map(hum_erde_1_adc, 0, 1023, 0, 100);
-  //hum_erde_2_prozent = map(hum_erde_2_adc, 0, 1023, 0, 100);
-
 }
 //void update_limits(void);
 //------------------------------------------------------
@@ -156,6 +151,8 @@ void update_limits() {
   limit_feuchte_2_adc = analogRead(LIMIT_ERDFEUCHTE_2);
 
   limit_temp_adc = analogRead(LIMIT_TEMPERATUR);
+  limit_temp_C = map( limit_temp_adc, 0, 1023, 10, 40 );                                        //  mapping für Poti Grad Celsius
+
   
   limit_luefter_adc = analogRead(LIMIT_LUEFTER);
   limit_luefter_C = map( limit_luefter_adc, 0, 1023, 15, 35 );                                  //  mapping für Poti Grad Celsius
@@ -188,7 +185,7 @@ void update_lcd(
   int hum_erde_2_prozent = map(hum_erde_2_adc, 0, 1023, 0, 100);
   int limit_feuchte_1_prozent = map(limit_feuchte_1_adc, 0, 1023, 0, 100);
   int limit_feuchte_2_prozent = map(limit_feuchte_2_adc, 0, 1023, 0, 100);
-  int limit_temp_prozent = map(limit_temp_adc, 0, 1023, 100, 0);
+  int limit_temp_prozent = map(limit_temp_adc, 0, 1023, 0, 100);
   int limit_luefter_prozent = map(limit_luefter_adc, 0, 1023, 0, 100);
 
 /* Anzeigebespiel DisplayNr.0 :
@@ -226,7 +223,7 @@ void update_lcd(
       lcd.setCursor(0, 2);                                                                      //  Displayausgabe dritte Zeile
       lcd.print(
         make_string(
-          String( "Ist_Temp:    " + String(temp_luft_C) + String( (char)223 )                   //  char 223 = "°" 
+          String( "Ist_Temp:    " + String(temp_luft_C) + String( (char)223 ) + "C"             //  char 223 = "°" 
                 )
         )
       );
@@ -271,7 +268,7 @@ void update_lcd(
       lcd.setCursor(0, 2);                                                                      //  Displayausgabe dritte Zeile
       lcd.print(
         make_string(
-          String( "Soll_Heiz : " + String(limit_temp_prozent) + String( (char)223 )
+          String( "Soll_Heiz : " + String(limit_temp_prozent) + String( (char)223 ) + "C"
                 )
         )
       );
@@ -279,7 +276,7 @@ void update_lcd(
       lcd.setCursor(0, 3);                                                                      //  Displayausgabe vierte Zeile
       lcd.print(
         make_string(
-          String( "Soll_Fan  : " + String(limit_luefter_prozent) + String( (char)223 )
+          String( "Soll_Fan  : " + String(limit_luefter_prozent) + String( (char)223 ) + "C"
                 )
         )
       );
@@ -321,16 +318,15 @@ void setup() {
 
   // REED-Kontakt
   pinMode(REEDKONTAKT, INPUT);                                                                  //  REED-Kontakt als Eingang
-  digitalWrite(REEDKONTAKT, HIGH );                                                             //  HIGH = Relais AUS
+  digitalWrite(REEDKONTAKT, HIGH );                                                             //  Pull-up ein (36k)
 
   // Relais Heizung
   pinMode(RELAIS_HEIZUNG, OUTPUT);                                                              //  Relais als Ausgang
   digitalWrite(RELAIS_HEIZUNG, HIGH );                                                          //  HIGH = Relais AUS
 
   // Helligkeitssensor
-  pinMode(HELLIGKEITSSENSOR_UV_LED, INPUT);                                                     //  Helligkeitssensor als Eingang
-  digitalWrite(HELLIGKEITSSENSOR_UV_LED, LOW);                                                  //  Startwert AUS
-  //helligkeit = analogRead(HELLIGKEITSSENSOR);                                                   //  Schwelle Helligkeit
+  pinMode(HELLIGKEITSSENSOR, INPUT);                                                            //  Helligkeitssensor als Eingang
+  //digitalWrite(HELLIGKEITSSENSOR, LOW);                                                         //  Pull-up aus (36k)
 
   // Relais LEDs
   pinMode(RELAIS_UV_LED, OUTPUT);                                                               //  Relais als Ausgang
@@ -409,7 +405,7 @@ void loop() {
   /******************************** Heizung <--> Temperatursensor DHT22 ***********************************/
   if ( ( millis() - t0_heizung ) > dt_heizung_ms ) {
     t0_heizung = millis();
-    if (temp_luft_C < limit_temp_C ) {                                                        //  wenn Lufttemperatur kälter als eingesteller Wert, dann
+    if (temp_luft_C > limit_temp_C ) {                                                      //  wenn Lufttemperatur kälter als eingesteller Wert, dann
       digitalWrite(RELAIS_HEIZUNG, LOW );                                                     //  heizen
     }
     else {                                                                                    //  sonst
@@ -431,9 +427,7 @@ void loop() {
   /******************************** LED-Licht <--> Helligkeitssensor *************************************/
   if ( ( millis() - t0_helligkeit ) > dt_helligkeit_ms ) {
     t0_helligkeit = millis();
-    helligkeit = digitalRead( HELLIGKEITSSENSOR_UV_LED );
-  //  if (helligkeit > limit_helligkeit ) {                                                   //  wenn dunkel, dann:
-    if ( helligkeit == HIGH ) {
+    if ( digitalRead( HELLIGKEITSSENSOR ) == HIGH ) {                                         //  wenn dunkel, dann:
       digitalWrite(RELAIS_UV_LED, LOW );                                                      //  Licht anschalten (LOW = Relais EIN) 
     }
     else {                                                                                    //  sonst:
