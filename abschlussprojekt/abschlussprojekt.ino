@@ -13,7 +13,7 @@
 #include "DHT.h"
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-//#include "/home/froth/project_x/abschlussprojekt/update_limits.h"                               // Auslagern von Funktionen
+#include "/home/acid/project_x/abschlussprojekt/update_messwerte.h"
 
 //-------------------------------------------------------
 //--- Makros -> Anschlußpins der Peripherie am Arduino
@@ -32,8 +32,8 @@
 #define REEDKONTAKT 11                                                                            //  Anschlußpin REED-Kontakt
 
 // analog
-#define ERDFEUCHTESENSOR_1 A0                                                                     //  Anschlußpin Erdfeuchtesensor 1
-#define ERDFEUCHTESENSOR_2 A1                                                                     //  Anschlußpin Erdfeuchtesensor 2
+//#define ERDFEUCHTESENSOR_1 A0                                                                     //  Anschlußpin Erdfeuchtesensor 1
+//#define ERDFEUCHTESENSOR_2 A1                                                                     //  Anschlußpin Erdfeuchtesensor 2
 #define LIMIT_ERDFEUCHTE_1 A2                                                                     //  Anschlußpin Poti 1
 #define LIMIT_ERDFEUCHTE_2 A3                                                                     //  Anschlußpin Poti 2
 #define LIMIT_TEMPERATUR A6                                                                       //  Anschlußpin Poti 3
@@ -43,25 +43,23 @@
 //--- Variablen
 //-------------------------------------------------------
 
-// volatile int taster_status = 0;
-
 unsigned long t0_temperaturmessung;                                                               //  Rechenzeit Temperaturmessung
-unsigned long dt_temperaturmessung_ms = 2000;                                                     //  Ablaufzeit Temperaturmessung
+unsigned long dt_temperaturmessung_ms = 2000;                                                     //  Ablaufzeit Temperaturmessung in ms
 
 unsigned long t0_display;                                                                         //  
-unsigned long dt_display_ms = 5000;                                                               //  
+unsigned long dt_display_ms = 2000;                                                               //  Ablaufzeit Displayaktualisierung in ms
 
 unsigned long t0_erdfeuchtemessung;                                                               //  
-unsigned long dt_erdfeuchtemessung_ms = 5000;                                                     //  
+unsigned long dt_erdfeuchtemessung_ms = 5000;                                                     //  Ablaufzeit Erdfeuchtemessung
 
 unsigned long t0_pumpe_1;                                                                         //  
-unsigned long dt_pumpendauer_1_ms = 5000;                                                         //  
+unsigned long dt_pumpendauer_1_ms = 5000;                                                         //  Ablaufzeit 
 
 unsigned long t0_pumpe_2;                                                                         //  
-unsigned long dt_pumpendauer_2_ms = 5000;                                                         //  
+unsigned long dt_pumpendauer_2_ms = 5000;                                                         //  Ablaufzeit 
 
 unsigned long t0_durchfeuchtung_1;                                                                //  
-unsigned long dt_warten_durchfeuchtung_1_ms = 10000;                                              //
+unsigned long dt_warten_durchfeuchtung_1_ms = 10000;                                              //  Ablaufzeit 
 
 unsigned long t0_durchfeuchtung_2;                                                                //
 unsigned long dt_warten_durchfeuchtung_2_ms = 10000;                                              //
@@ -75,17 +73,19 @@ unsigned long dt_luefter_ms = 5000;                                             
 unsigned long t0_helligkeit;                                                                      //
 unsigned long dt_helligkeit_ms = 5000;                                                            //
 
-//int limit_feuchte_1_adc = 500;
-//int limit_feuchte_2_adc = 500;
-int limit_helligkeit = 500;
-//int limit_temp_adc = 25;                                                                        //  Lufttemperaturwert -> Heizen
+//  für Einlesen der Sensoren
+//int hum_erde_1_adc;
+//int hum_erde_2_adc;
+//int hum_luft;
+//int temp_luft_C;
 
-//int limit_luefter_adc = 27;                                                                     //  Lufttemperaturwert -> Lüften
+//  für Schwellen aus Potis
+int limit_feuchte_1_adc;
+int limit_feuchte_2_adc;
+int limit_temp_adc;
+int limit_temp_C;
+int limit_luefter_adc;
 int limit_luefter_C = 15;
-
-int hum_erde_1_adc, hum_erde_2_adc, temp_luft_C, hum_luft, voriger_taster;
-int limit_feuchte_1_adc, limit_feuchte_2_adc, limit_temp_adc, limit_temp_C, limit_luefter_adc;
-//int hum_erde_1_prozent, hum_erde_2_prozent, limit_feuchte_1_prozent, limit_feuchte_2_prozent, limit_temp_prozent, limit_luefter_prozent;
 
 // für Übergangsautomat
 #define zustand_warten_zu_trocken  0
@@ -94,19 +94,18 @@ int limit_feuchte_1_adc, limit_feuchte_2_adc, limit_temp_adc, limit_temp_C, limi
 int zustand_1 = zustand_warten_zu_trocken;
 int zustand_2 = zustand_warten_zu_trocken;
 
+// für Tasterzustand auslesen
+int voriger_taster;
 int aktueller_taster = LOW;
+
+// für Displayumschaltung
 int displ_nr = 0;
 
 
 //-------------------------------------------------------
 // LCD per I2C und die Adresse 0x37
 //-------------------------------------------------------
-
-// Windows, auch Linux mit folgender lib: https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
-LiquidCrystal_I2C lcd(0x3F, 20, 4 );
-
-// Linux
-//LiquidCrystal_I2C lcd(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
+LiquidCrystal_I2C lcd( 0x3F, 20, 4 );
 
 // Temperatur- und Feuchtesensor einrichten (Pin, Typ) 
 DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
@@ -114,13 +113,6 @@ DHT dht(TEMPERATURSENSOR_LUEFTER, DHTTYPE);
 //-------------------------------------------------------
 //--- Funktionen
 //-------------------------------------------------------
-
-
-// ISR um die Pumpe manuell ein-/ausschalten zu können
-//void taster_unterbricht() {
-//  taster_status = digitalRead(TASTER_DISPLAY);                                                //  Tasterstatus einlesen (High/Low)
-//  digitalWrite(RELAIS_PUMPE_UNTEN, taster_status);                                            //  Relais schalten
-//}
 
 //------------------------------------------------------
 //--- String ausgeben
@@ -135,27 +127,26 @@ String make_string( String s ) {                                                
 //------------------------------------------------------
 //--- Messwerte erfassen
 //------------------------------------------------------
-void update_messwerte() {
+/*void update_messwerte() {
   hum_erde_1_adc = analogRead( ERDFEUCHTESENSOR_1 );                                            //  Lesen der Erdfeuchtigkeit, Werte zw. 0..1023
   hum_erde_2_adc = analogRead( ERDFEUCHTESENSOR_2 );                                            //  Lesen der Erdfeuchtigkeit, Werte zw. 0..1023
   hum_luft = dht.readHumidity();                                                                //  Lesen der Luftfeuchtigkeit und speichern in die Variable hum_luft
   temp_luft_C = dht.readTemperature();                                                          //  Lesen der Temperatur in °C und speichern in die Variable temp_luft
 
-}
-//void update_limits(void);
+}*/
+
 //------------------------------------------------------
 //--- Limits einlesen
 //------------------------------------------------------
 void update_limits() {
-  limit_feuchte_1_adc = analogRead(LIMIT_ERDFEUCHTE_1);                                         //  Werte für den ADC
-  limit_feuchte_2_adc = analogRead(LIMIT_ERDFEUCHTE_2);
+  limit_feuchte_1_adc = analogRead( LIMIT_ERDFEUCHTE_1 );                                        //  Werte für den ADC Erdfeuchtesensor 1
+  limit_feuchte_2_adc = analogRead( LIMIT_ERDFEUCHTE_2 );                                        //  Werte für den ADC Erdfeuchtesensor 2
 
-  limit_temp_adc = analogRead(LIMIT_TEMPERATUR);
-  limit_temp_C = map( limit_temp_adc, 0, 1023, 10, 40 );                                        //  mapping für Poti Grad Celsius
-
+  limit_temp_adc = analogRead( LIMIT_TEMPERATUR );                                               //  Werte für den ADC Temp-Sensor <-> Heizung
+  limit_temp_C = map( limit_temp_adc, 0, 1023, 10, 40 );                                         //  mapping für Poti Grad Celsius
   
-  limit_luefter_adc = analogRead(LIMIT_LUEFTER);
-  limit_luefter_C = map( limit_luefter_adc, 0, 1023, 15, 35 );                                  //  mapping für Poti Grad Celsius
+  limit_luefter_adc = analogRead( LIMIT_LUEFTER );                                               //  Werte für den ADC Temp-Sensor <-> Lüfter
+  limit_luefter_C = map( limit_luefter_adc, 0, 1023, 15, 35 );                                   //  mapping für Poti Grad Celsius
 
 }
 
@@ -170,7 +161,7 @@ bool tuer_zu() {                                                                
 //--- Anzeige aktualisieren
 //------------------------------------------------------
 void update_lcd( 
-  int nr_display,                                                                               //  Übergabe der Vareablen, die in der Funktion vorkommen
+  int nr_display,                                                                               //  Übergabe der Variablen, die in der Funktion vorkommen
   int temp_luft_C, 
   int hum_luft,
   int hum_erde_1_adc, 
@@ -181,12 +172,12 @@ void update_lcd(
   int limit_luefter_adc ) {
     
 
-  int hum_erde_1_prozent = map(hum_erde_1_adc, 0, 1023, 0, 100);                                //  mapping für LCD lesbare Werte in %
-  int hum_erde_2_prozent = map(hum_erde_2_adc, 0, 1023, 0, 100);
-  int limit_feuchte_1_prozent = map(limit_feuchte_1_adc, 0, 1023, 0, 100);
-  int limit_feuchte_2_prozent = map(limit_feuchte_2_adc, 0, 1023, 0, 100);
-  int limit_temp_prozent = map(limit_temp_adc, 0, 1023, 0, 100);
-  int limit_luefter_prozent = map(limit_luefter_adc, 0, 1023, 0, 100);
+  int hum_erde_1_prozent = map( hum_erde_1_adc, 0, 1023, 0, 100 );                                //  mapping für LCD lesbare Werte in %
+  int hum_erde_2_prozent = map( hum_erde_2_adc, 0, 1023, 0, 100 );
+  int limit_feuchte_1_prozent = map( limit_feuchte_1_adc, 0, 1023, 0, 100 );
+  int limit_feuchte_2_prozent = map( limit_feuchte_2_adc, 0, 1023, 0, 100 );
+  int limit_temp_prozent = map( limit_temp_adc, 0, 1023, 0, 100 );
+  int limit_luefter_prozent = map( limit_luefter_adc, 0, 1023, 0, 100 );
 
 /* Anzeigebespiel DisplayNr.0 :
  * 
@@ -201,37 +192,37 @@ void update_lcd(
 
 
   
-  switch ( nr_display ) {                                                                       // 
+  switch ( nr_display ) {                                                                       //  
 
     case 0 :                                                                                    //  Displayinhalt 1
-      lcd.setCursor(0, 0);                                                                      //  Displayausgabe erste Zeile
-      lcd.print(
-        make_string(
-          String( "Ist_Erd_1:   " + String(hum_erde_1_prozent) + String( (char)37 )             //  char 37 = "%"
+      lcd.setCursor(0, 0);                                                                      //  setzte Cursor erste Spalte/erste Zeile
+      lcd.print(                                                                                //  Displayausgabe
+        make_string(                                                                            //  baue einen String mit Leerzeichen am Ende
+          String( "Ist_Erd_1:   " + String( hum_erde_1_prozent ) + String( (char)37 )           //  Strings verketten, char 37 = "%"
                 )
         )
       );
 
-      lcd.setCursor(0, 1);                                                                      //  Displayausgabe zweite Zeile
+      lcd.setCursor(0, 1);                                                                      //  setzte Cursor erste Spalte/zweite Zeile
       lcd.print(
         make_string(
-          String( "Ist_Erd_2:   " + String(hum_erde_2_prozent) + String( (char)37 )
+          String( "Ist_Erd_2:   " + String( hum_erde_2_prozent ) + String( (char)37 )
                 )
         )
       );
 
-      lcd.setCursor(0, 2);                                                                      //  Displayausgabe dritte Zeile
+      lcd.setCursor(0, 2);                                                                      //  setzte Cursor erste Spalte/dritte Zeile
       lcd.print(
         make_string(
-          String( "Ist_Temp:    " + String(temp_luft_C) + String( (char)223 ) + "C"             //  char 223 = "°" 
+          String( "Ist_Temp:    " + String( temp_luft_C ) + String( (char)223 ) + "C"           //  char 223 = "°" 
                 )
         )
       );
 
-      lcd.setCursor(0, 3);                                                                      //  Displayausgabe vierte Zeile
+      lcd.setCursor(0, 3);                                                                      //  setzte Cursor erste Spalte/vierte Zeile
       lcd.print(
         make_string(
-          String( "Luftfeuchte: " + String(hum_luft) + String( (char)37 )
+          String( "Luftfeuchte: " + String( hum_luft ) + String( (char)37 )
                 )
         )
       );
@@ -252,7 +243,7 @@ void update_lcd(
       lcd.setCursor(0, 0);                                                                      //  Displayausgabe erste Zeile
       lcd.print(
         make_string(
-          String( "Soll_Erd_1: " + String(limit_feuchte_1_prozent) + String( (char)37 )
+          String( "Soll_Erd_1: " + String( limit_feuchte_1_prozent ) + String( (char)37 )
                 )
         )
       );
@@ -260,7 +251,7 @@ void update_lcd(
       lcd.setCursor(0, 1);                                                                      //  Displayausgabe zweite Zeile
       lcd.print(
         make_string(
-          String( "Soll_Erd_2: " + String(limit_feuchte_2_prozent) + String( (char)37 )
+          String( "Soll_Erd_2: " + String( limit_feuchte_2_prozent ) + String( (char)37 )
                 )
         )
       );
@@ -268,7 +259,7 @@ void update_lcd(
       lcd.setCursor(0, 2);                                                                      //  Displayausgabe dritte Zeile
       lcd.print(
         make_string(
-          String( "Soll_Heiz : " + String(limit_temp_prozent) + String( (char)223 ) + "C"
+          String( "Soll_Heiz : " + String( limit_temp_prozent ) + String( (char)223 ) + "C"
                 )
         )
       );
@@ -276,7 +267,7 @@ void update_lcd(
       lcd.setCursor(0, 3);                                                                      //  Displayausgabe vierte Zeile
       lcd.print(
         make_string(
-          String( "Soll_Fan  : " + String(limit_luefter_prozent) + String( (char)223 ) + "C"
+          String( "Soll_Fan  : " + String( limit_luefter_prozent ) + String( (char)223 ) + "C"
                 )
         )
       );
@@ -291,18 +282,16 @@ void update_lcd(
 //------------------------------------------------------
 void setup() {
 
-  //lcd.init();                                                                                 //  Windows
-  //lcd.backlight();                                                                            //  Windows
-  //lcd.begin(20, 4);                                                                           //  Linux
-  lcd.begin();                                                                                  //  Linux
-  lcd.setCursor(0, 0);
-  lcd.print("+++ STARTING...  +++");
+  lcd.begin();                                                                                  //  LCD Initialisierung
+  lcd.setCursor(0, 0);                                                                          //  Setze Cursor auf Position
+  lcd.print("+++ STARTING...  +++");                                                            //  Ausgabe aufs LCD
 
+  update_messwerte();                                                                           //  Messwerte einlesen
+  update_limits();                                                                              //  Schwellen von den Potis auslesen
+  
   // Temperatursensor
-  dht.begin();
-  update_messwerte();
-  update_limits();
-
+  dht.begin();                                                                                  //  Initialisierung DHT-Sensors
+  
   // Pumpen
   pinMode(RELAIS_PUMPE_UNTEN, OUTPUT);                                                          //  Relais als Ausgang
   digitalWrite(RELAIS_PUMPE_UNTEN, HIGH );                                                      //  HIGH = Relais AUS
@@ -314,7 +303,7 @@ void setup() {
   digitalWrite(RELAIS_LUEFTER, HIGH );                                                          //  HIGH = Relais AUS
 
   // Taster
-  pinMode(TASTER_DISPLAY, INPUT);
+  pinMode(TASTER_DISPLAY, INPUT);                                                               //  Taster als Eingang
 
   // REED-Kontakt
   pinMode(REEDKONTAKT, INPUT);                                                                  //  REED-Kontakt als Eingang
@@ -332,26 +321,20 @@ void setup() {
   pinMode(RELAIS_UV_LED, OUTPUT);                                                               //  Relais als Ausgang
   digitalWrite(RELAIS_UV_LED, HIGH);                                                            //  HIGH = Relais AUS
   
-
-  // ISR einrichten
-  //  attachInterrupt(0, taster_unterbricht, LOW);
-  
   // Zeiten setzen
-  t0_heizung = millis();
-  t0_luefter = millis();
-  t0_display = millis();
-  t0_helligkeit = millis();
-  t0_temperaturmessung = millis();
-  t0_erdfeuchtemessung = millis();
+  t0_heizung = millis();                                                                        //  Startzeit Timer Heizung
+  t0_luefter = millis();                                                                        //  Startzeit Timer Lüfter
+  t0_display = millis();                                                                        //  Startzeit Timer Display
+  t0_helligkeit = millis();                                                                     //  Startzeit Timer Helligkeit
+  t0_temperaturmessung = millis();                                                              //  Startzeit Timer Temp-Messung
+  t0_erdfeuchtemessung = millis();                                                              //  Startzeit Timer Erdfeuchtemessung
 
-  displ_nr = 0;
-  zustand_1 = zustand_warten_zu_trocken;
-  zustand_2 = zustand_warten_zu_trocken;
+  displ_nr = 0;                                                                                 //  Startwert Displaynummer 
+  zustand_1 = zustand_warten_zu_trocken;                                                        //  Startzustand Übergangsautomat 1 setzen
+  zustand_2 = zustand_warten_zu_trocken;                                                        //  Startzustand Übergangsautomat 2 setzen 
 
-  //taster = digitalRead(TASTER_DISPLAY);                                                     //  Tasterzustand lesen
-
-  lcd.setCursor(0, 1); // Spalte, Zeile
-  lcd.print("+++ ...COMPLETE! +++");
+  lcd.setCursor(0, 1); // Spalte, Zeile                                                         //  Setze Cursor auf Position 
+  lcd.print("+++ ...COMPLETE! +++");                                                            //  Ausgabe aufs LCD 
 
   
 }
@@ -381,9 +364,9 @@ void loop() {
 
   /********************************( Display Ausgabe )*****************************************************/
   if ( ( millis() - t0_display ) > dt_display_ms ) {                                          //  wenn Displayablaufzeit vergangen, dann...
-    t0_display = millis();                                                                    //  Neuer Wert Displayzeit
+    t0_display = millis();                                                                    //  neuer Wert Displayzeit
     update_lcd(                                                                               //  Displaywerte aktualisieren
-       displ_nr,                                                                              // Variablen, die übergeben werden, hier angeben/eintragen
+       displ_nr,                                                                              //  Variablen, die übergeben werden, hier angeben/eintragen
        temp_luft_C,
        hum_luft,
        hum_erde_1_adc,
@@ -396,16 +379,16 @@ void loop() {
   }
 
   /******************************** Messen Temperatur und Feuchtigkeit ***********************************/
-  if ( ( millis() - t0_temperaturmessung ) > dt_temperaturmessung_ms ) {
+  if ( ( millis() - t0_temperaturmessung ) > dt_temperaturmessung_ms ) {                      //  wenn Zeit für Temp-Messung abgelaufen, dann
     t0_temperaturmessung = millis();                                                          //  Timer auf neuen Wert setzen
     update_messwerte();                                                                       //  Messwerte aktualisieren
   }
 
 
   /******************************** Heizung <--> Temperatursensor DHT22 ***********************************/
-  if ( ( millis() - t0_heizung ) > dt_heizung_ms ) {
-    t0_heizung = millis();
-    if (temp_luft_C > limit_temp_C ) {                                                      //  wenn Lufttemperatur kälter als eingesteller Wert, dann
+  if ( ( millis() - t0_heizung ) > dt_heizung_ms ) {                                          //  wenn Zeit für Heizen abgelaufen, dann
+    t0_heizung = millis();                                                                    //  Timer auf neuen Wert setzen
+    if (temp_luft_C < limit_temp_adc ) {                                                        //  wenn Lufttemperatur kälter als eingesteller Wert, dann
       digitalWrite(RELAIS_HEIZUNG, LOW );                                                     //  heizen
     }
     else {                                                                                    //  sonst
@@ -416,7 +399,7 @@ void loop() {
   /******************************** Lüfter <--> Temperatursensor DHT22 ************************************/
   if ( ( millis() - t0_luefter ) > dt_luefter_ms ) {
     t0_luefter = millis();
-    if (temp_luft_C > limit_luefter_C ) {                                                     //  wenn Lufttemperatur wärmer als eingesteller Wert, dann
+    if (temp_luft_C > limit_luefter_adc ) {                                                     //  wenn Lufttemperatur wärmer als eingesteller Wert, dann
       digitalWrite(RELAIS_LUEFTER, LOW );                                                     //  Lüfter einschalten (LOW = Relais EIN)
     }
     else {                                                                                    //  sonst
@@ -484,7 +467,7 @@ void loop() {
   switch ( zustand_2 ) {
 
     case zustand_warten_zu_trocken :
-      //--- im Zustand bleiben, bis if() erfüllt -> neuer ZUstand
+      //--- im Zustand bleiben, bis if() erfüllt -> neuer Zustand
       if (( hum_erde_2_adc > limit_feuchte_2_adc) and ( tuer_zu() )) {                        //  wenn Erdfeuchte2 sehr trocken, dann
         digitalWrite(RELAIS_PUMPE_OBEN, LOW );                                                //  Pumpe an und wässern (LOW = Relais EIN)
         t0_pumpe_2 = millis();                                                                //  neue Zeit setzen
