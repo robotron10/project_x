@@ -2,8 +2,8 @@
 #include "DHT.h"
 #include "Arduino.h"
 
-#define ERDFEUCHTESENSOR_1 A0                                                                     //  Anschlußpin Erdfeuchtesensor 1
-#define ERDFEUCHTESENSOR_2 A1                                                                     //  Anschlußpin Erdfeuchtesensor 2
+#define ERDFEUCHTESENSOR_1 A0                         //  Anschlußpin Erdfeuchtesensor 1
+#define ERDFEUCHTESENSOR_2 A1                         //  Anschlußpin Erdfeuchtesensor 2
 
 int hum_erde_1_adc;
 int hum_erde_2_adc;

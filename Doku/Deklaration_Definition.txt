@@ -1,0 +1,50 @@
+https://de.wikipedia.org/wiki/Funktionsprototyp
+
+## 
+Als Funktionsprototyp oder Funktionskopf bezeichnet man in verschiedenen Programmiersprachen (vor allem C und C++) die Deklaration einer Funktion – inklusive Angaben über Anzahl und Typ der Parameter und Typ des Rückgabewertes – getrennt von ihrer Implementierung (Definition). Man spricht auch ungenau von der Vorausdeklaration (englisch: forward declaration, oft falsch als „Vorwärtsdeklaration“ übersetzt) einer Funktion, diese muss aber nicht in jedem Fall einen vollwertigen Funktionsprototypen darstellen. Beispiel: int funktion(); wäre in C eine gültige Vorausdeklaration, aber kein Prototyp, da keinerlei Angaben über Funktionsparameter gemacht werden. Jede Definition einer Funktion liefert hingegen automatisch immer auch eine Prototypdeklaration für nachfolgenden Programmcode. 
+
+
+
+## Beispiel in C
+
+// enthält unter anderem den Funktionsprototyp für printf():
+#include <stdio.h>
+
+// Prototypdeklaration:
+double summe();
+
+int main( void )
+{
+    // Aufruf der Funktion; ohne Funktionsprototyp wären hier
+    // Argumenttyp (int) und Parametertyp (double) inkompatibel:
+    printf( "2+3=%g\n", summe( 2, 3 ) );
+    return 0;
+}
+
+// Definition der Funktion:
+double summe( double zahl1, double zahl2 )
+{
+    return zahl1 + zahl2;
+}
+
+
+## Beispiel 2
+
+main.c
+#include "beispiel.h"
+// Funktionsaufruf
+xyz();
+
+
+beispiel.c
+#include "beispiel.h"
+// Definition
+xyz(){
+   ...;
+   ...;
+}
+
+beispiel.h
+// Deklaration/Prototyp
+xyz();
+
