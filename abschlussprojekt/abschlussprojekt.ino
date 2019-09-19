@@ -13,7 +13,7 @@
 #include "DHT.h"
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-//#include "/home/acid/project_x/abschlussprojekt/update_messwerte.h"
+#include "update_messwerte.h"
 
 //-------------------------------------------------------
 //--- Makros -> Anschlußpins der Peripherie am Arduino
@@ -74,10 +74,10 @@ unsigned long t0_helligkeit;                                                    
 unsigned long dt_helligkeit_ms = 5000;                                                            //
 
 //  für Einlesen der Sensoren
-int hum_erde_1_adc;
+/*int hum_erde_1_adc;
 int hum_erde_2_adc;
 int hum_luft;
-int temp_luft_C;
+int temp_luft_C;*/
 
 //  für Schwellen aus Potis
 int limit_feuchte_1_adc;
@@ -96,7 +96,7 @@ int zustand_2 = zustand_warten_zu_trocken;
 
 // für Tasterzustand auslesen
 int voriger_taster;
-int aktueller_taster = LOW;
+int aktueller_taster = HIGH;
 
 // für Displayumschaltung
 int displ_nr = 0;
@@ -127,13 +127,13 @@ String make_string( String s ) {                                                
 //------------------------------------------------------
 //--- Messwerte erfassen
 //------------------------------------------------------
-void update_messwerte() {
+/*void update_messwerte() {
   hum_erde_1_adc = analogRead( ERDFEUCHTESENSOR_1 );                                            //  Lesen der Erdfeuchtigkeit, Werte zw. 0..1023
   hum_erde_2_adc = analogRead( ERDFEUCHTESENSOR_2 );                                            //  Lesen der Erdfeuchtigkeit, Werte zw. 0..1023
   hum_luft = dht.readHumidity();                                                                //  Lesen der Luftfeuchtigkeit und speichern in die Variable hum_luft
   temp_luft_C = dht.readTemperature();                                                          //  Lesen der Temperatur in °C und speichern in die Variable temp_luft
 
-}
+}*/
 
 //------------------------------------------------------
 //--- Limits einlesen
@@ -286,7 +286,7 @@ void setup() {
   lcd.setCursor(0, 0);                                                                          //  Setze Cursor auf Position
   lcd.print("+++ STARTING...  +++");                                                            //  Ausgabe aufs LCD
 
-  update_messwerte();                                                                           //  Messwerte einlesen
+  upmess.update_messwerte();                                                                           //  Messwerte einlesen
   update_limits();                                                                              //  Schwellen von den Potis auslesen
   
   // Temperatursensor
@@ -303,7 +303,7 @@ void setup() {
   digitalWrite(RELAIS_LUEFTER, HIGH );                                                          //  HIGH = Relais AUS
 
   // Taster
-  pinMode(TASTER_DISPLAY, INPUT);                                                               //  Taster als Eingang
+  pinMode(TASTER_DISPLAY, INPUT_PULLUP);                                                        //  Taster als Eingang, interner Pullup ein
 
   // REED-Kontakt
   pinMode(REEDKONTAKT, INPUT);                                                                  //  REED-Kontakt als Eingang
@@ -351,7 +351,7 @@ void loop() {
 
   /********************************( Änderung am Taster )*****************************************************/
   aktueller_taster = digitalRead(TASTER_DISPLAY);                                             //  Variable
-  if (( voriger_taster == LOW ) and ( aktueller_taster == HIGH)) {                            //  wurde der Tasterstatus geändert
+  if (( voriger_taster == HIGH ) and ( aktueller_taster == LOW)) {                            //  wurde der Tasterstatus geändert
     t0_display = millis() - dt_display_ms;                                                    //  Wenn Taster gedrückt, gleich die Displayausgabe aktualisieren
     displ_nr++;                                                                               //  Displaynummer eins hochzählen
     
@@ -381,7 +381,8 @@ void loop() {
   /******************************** Messen Temperatur und Feuchtigkeit ***********************************/
   if ( ( millis() - t0_temperaturmessung ) > dt_temperaturmessung_ms ) {                      //  wenn Zeit für Temp-Messung abgelaufen, dann
     t0_temperaturmessung = millis();                                                          //  Timer auf neuen Wert setzen
-    update_messwerte();                                                                       //  Messwerte aktualisieren
+    upmess.update_messwerte();                                                                //  Messwerte aktualisieren
+     
   }
 
 
