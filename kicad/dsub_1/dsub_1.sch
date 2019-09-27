@@ -142,8 +142,4 @@ Wire Wire Line
 	7050 4500 7050 4550
 Wire Wire Line
 	7050 4550 6800 4550
-Text GLabel 2050 4150 0    50   Input ~ 0
-Fotowiderstand_data
-Wire Wire Line
-	2050 4150 3650 4150
 $EndSCHEMATC

@@ -1,15 +1,20 @@
 //  https://www.arduino.cc/en/Hacking/LibraryTutorial
-#ifndef update_messwerte.h
-#define update_messwerte.h
+#ifndef upmess_h
+#define upmess_h
 
 #include "Arduino.h"
 
 //  Deklaration
 //  Prototypen
-class um {
+class upmess {
 
    public:
-     void update_messwerte();
+      int hum_erde_1_adc;
+      int hum_erde_2_adc;
+      int hum_luft;
+      int temp_luft_C;
+      void update_messwerte();
+                          
 
 };
 #endif
