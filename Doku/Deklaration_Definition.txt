@@ -39,12 +39,12 @@ xyz();
 beispiel.c
 #include "beispiel.h"
 // Definition
-xyz(){
+void xyz(){
    ...;
    ...;
 }
 
 beispiel.h
 // Deklaration/Prototyp
-xyz();
+void xyz();
 
