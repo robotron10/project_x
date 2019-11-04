@@ -12,17 +12,13 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////////////7
 
-#include "DHT.h"
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
-
 #include "makros.h"
 #include "tuer_zu.h"
-#include "update_limits.h"
-#include "update_messwerte.h"
-#include "update_lcd.h"
 #include "pumpe_1.h"
 #include "pumpe_2.h"
+#include "update_limits.h"
+#include "update_lcd.h"
+#include "update_messwerte.h"
 
 //-------------------------------------------------------
 //--- Variablen
@@ -66,11 +62,6 @@ int aktueller_taster = HIGH;
 
 // für Displayumschaltung
 int displ_nr = 0;
-
-
-//-------------------------------------------------------
-//--- Funktionen wurden modularisiert
-//-------------------------------------------------------
 
 //------------------------------------------------------
 //--- Setup des Programms, wird nur einmal ausgeführt
@@ -217,20 +208,6 @@ void loop() {
 
   /******************************** Erdfuchtesensor <--> pumpem oben + unten  ***************************************/
 
-  /*
-    // --- Übergangsautomat Erdfeuchte:
-    1. (warten)
-      warten auf "zu trocken", d.h. bis Feuchtigkeit zu niedrig.
-      Wenn zu trocken; Pumpe ein, Statzeit für Pumpe notieren
-      Zustand ändern in -> pumpen
-    2. (pumpen)
-      pumpen, bis Pumpzeit abgelaufen
-      Pumpe aus, Startzeit für "warten auf Durchfeuchtung" notieren,
-      Zustand ändern in -> "warten auf Durchfeuchtung" ändern
-    3. (warten auf durchfeuchtung)
-     wenn Zeit für "warten auf Durchfeuchtung" abgelaufen -> warten auf zu trocken
-  */
-  
   // für die Pumpe unten
   pumpen_1();
 
