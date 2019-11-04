@@ -5,8 +5,8 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title "Entstördrosseln für die Wasserpumpe"
-Date "2019-07-10"
+Title "Leitungsfilter für die Wasserpumpe"
+Date "2019-11-03"
 Rev "0.2"
 Comp "STB AEA8"
 Comment1 "Nawroth, Graf, Roth"
@@ -109,7 +109,7 @@ Wire Notes Line
 Wire Notes Line
 	5800 3350 5800 2550
 Text Notes 6250 2500 0    79   ~ 0
-Filter
+Leitungsfilter
 Text Notes 9250 1350 0    50   ~ 0
 Infos aus dem Netz:\nSpule -> 50-100µH\nKondensator -> 47-100nF
 $Comp
