@@ -93,6 +93,20 @@
 \setcounter{secnumdepth}{5}
 \makeindex
 
+% Hyperlinks (required, but should be loaded last)
+\usepackage{ifpdf}
+\ifpdf
+  \usepackage[pdftex,pagebackref=true]{hyperref}
+\else
+  \usepackage[ps2pdf,pagebackref=true]{hyperref}
+\fi
+\hypersetup{%
+  colorlinks=true,%
+  linkcolor=blue,%
+  citecolor=blue,%
+  unicode%
+}
+
 % Custom commands
 \newcommand{\clearemptydoublepage}{%
   \newpage{\pagestyle{empty}\cleardoublepage}%
@@ -106,11 +120,15 @@
 \begin{document}
 
 % Titlepage & ToC
+\hypersetup{pageanchor=false,
+             bookmarksnumbered=true,
+             pdfencoding=unicode
+            }
 \pagenumbering{alph}
 \begin{titlepage}
 \vspace*{7cm}
 \begin{center}%
-{\Large Abschlussprojekt }\\
+{\Large Abschlussprojekt vollautomatisches Gewächshaus }\\
 \vspace*{1cm}
 {\large Erzeugt von Doxygen 1.8.13}\\
 \end{center}
@@ -120,12 +138,26 @@
 \tableofcontents
 \clearemptydoublepage
 \pagenumbering{arabic}
+\hypersetup{pageanchor=true}
 
 %--- Begin generated contents ---
 \chapter{Datei-\/\+Verzeichnis}
 \input{files}
 \chapter{Datei-\/\+Dokumentation}
-\input{abschlussprojekt__doxygen_8c}
+\input{abschlussprojekt_8c}
+\input{make__string_8cpp}
+\input{make__string_8h}
+\input{makros_8h}
+\input{pumpe__1_8cpp}
+\input{pumpe__1_8h}
+\input{pumpe__2_8cpp}
+\input{pumpe__2_8h}
+\input{tuer__zu_8cpp}
+\input{tuer__zu_8h}
+\input{update__lcd_8h}
+\input{update__limits_8cpp}
+\input{update__limits_8h}
+\input{update__messwerte_8h}
 %--- End generated contents ---
 
 % Index

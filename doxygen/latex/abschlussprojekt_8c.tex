@@ -1,0 +1,353 @@
+\hypertarget{abschlussprojekt_8c}{}\section{/home/zero/abschlussprojekt/abschlussprojekt.c-\/\+Dateireferenz}
+\label{abschlussprojekt_8c}\index{/home/zero/abschlussprojekt/abschlussprojekt.\+c@{/home/zero/abschlussprojekt/abschlussprojekt.\+c}}
+{\ttfamily \#include \char`\"{}makros.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}tuer\+\_\+zu.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}pumpe\+\_\+1.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}pumpe\+\_\+2.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}update\+\_\+limits.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}update\+\_\+lcd.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}update\+\_\+messwerte.\+h\char`\"{}}\newline
+Include-\/\+Abhängigkeitsdiagramm für abschlussprojekt.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{abschlussprojekt_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{Funktionen}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{abschlussprojekt_8c_a4fc01d736fe50cf5b977f755b675f11d}{setup} ()
+\item 
+void \hyperlink{abschlussprojekt_8c_afe461d27b9c48d5921c00d521181f12f}{loop} ()
+\end{DoxyCompactItemize}
+\subsection*{Variablen}
+\begin{DoxyCompactItemize}
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a34dde2eacd6bcd6c70d2717074e5422e}{t0\+\_\+temperaturmessung}
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a8db8552a3060b9b4636a9f4844125b5e}{dt\+\_\+temperaturmessung\+\_\+ms} = 2000
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a6d6f46738f23818a51a33e54540fc834}{t0\+\_\+display}
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_aeb4ea2e27ad59b8b80c07f5d9a501578}{dt\+\_\+display\+\_\+ms} = 2000
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_aaf3eaa118947402c939df227b9daad8e}{t0\+\_\+erdfeuchtemessung}
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a5a3210d0676305262c0be06fd27f8a77}{dt\+\_\+erdfeuchtemessung\+\_\+ms} = 5000
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a9ca81fb931b2eb83f3a822a49df8995f}{t0\+\_\+heizung}
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a634f1491bed4b1420222d3532ad6903a}{dt\+\_\+heizung\+\_\+ms} = 5000
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a1cc8e9a2f7e21352f0f123728881ad62}{t0\+\_\+luefter}
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a5ff96735fd161b079af42979f93a463a}{dt\+\_\+luefter\+\_\+ms} = 5000
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_ab55c3f7b2994108f2af60557f2c801d2}{t0\+\_\+helligkeit}
+\item 
+unsigned long \hyperlink{abschlussprojekt_8c_a504a3dfe31ae72c0de653e1f1417aff2}{dt\+\_\+helligkeit\+\_\+ms} = 5000
+\item 
+int \hyperlink{abschlussprojekt_8c_afa416e7460cf043207be351d750b97fe}{hum\+\_\+erde\+\_\+1\+\_\+adc}
+\item 
+int \hyperlink{abschlussprojekt_8c_aacdbec939adcfa404b8c42b2e064b110}{hum\+\_\+erde\+\_\+2\+\_\+adc}
+\item 
+int \hyperlink{abschlussprojekt_8c_ac9fcb87eca48e4002731015e004966ef}{hum\+\_\+luft}
+\item 
+int \hyperlink{abschlussprojekt_8c_a0e6f058da75dead800f4a33e63586703}{temp\+\_\+luft\+\_\+C}
+\item 
+int \hyperlink{abschlussprojekt_8c_abb1c509cfb119e70585771234accdc4c}{limit\+\_\+feuchte\+\_\+1\+\_\+adc}
+\item 
+int \hyperlink{abschlussprojekt_8c_a11941af86181c1d0476b4bad92345dee}{limit\+\_\+feuchte\+\_\+2\+\_\+adc}
+\item 
+int \hyperlink{abschlussprojekt_8c_a8f0ffb4ec25253a324ab4dac6d3cf1c4}{limit\+\_\+temp\+\_\+adc}
+\item 
+int \hyperlink{abschlussprojekt_8c_a7af3ab4da71f5b8ce8c0d93640690817}{limit\+\_\+temp\+\_\+C}
+\item 
+int \hyperlink{abschlussprojekt_8c_a3f6dd9ed3b997c063d7c90a38a69ab3a}{limit\+\_\+luefter\+\_\+adc}
+\item 
+int \hyperlink{abschlussprojekt_8c_a27d916670e311d9e7881ebdc4807e0f5}{limit\+\_\+luefter\+\_\+C}
+\item 
+int \hyperlink{abschlussprojekt_8c_aa8909f35a0f963844648169d995f3d0a}{voriger\+\_\+taster}
+\item 
+int \hyperlink{abschlussprojekt_8c_aec00a17d0e71d1e7f6478babd75d6319}{aktueller\+\_\+taster} = H\+I\+GH
+\item 
+int \hyperlink{abschlussprojekt_8c_a124b7ae42481bdac66b27838ff061b05}{displ\+\_\+nr} = 0
+\end{DoxyCompactItemize}
+
+
+\subsection{Dokumentation der Funktionen}
+\mbox{\Hypertarget{abschlussprojekt_8c_afe461d27b9c48d5921c00d521181f12f}\label{abschlussprojekt_8c_afe461d27b9c48d5921c00d521181f12f}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!loop@{loop}}
+\index{loop@{loop}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{loop()}{loop()}}
+{\footnotesize\ttfamily void loop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definiert in Zeile 134 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a4fc01d736fe50cf5b977f755b675f11d}\label{abschlussprojekt_8c_a4fc01d736fe50cf5b977f755b675f11d}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!setup@{setup}}
+\index{setup@{setup}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{setup()}{setup()}}
+{\footnotesize\ttfamily void setup (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definiert in Zeile 69 der Datei abschlussprojekt.\+c.
+
+
+
+\subsection{Variablen-\/\+Dokumentation}
+\mbox{\Hypertarget{abschlussprojekt_8c_aec00a17d0e71d1e7f6478babd75d6319}\label{abschlussprojekt_8c_aec00a17d0e71d1e7f6478babd75d6319}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!aktueller\+\_\+taster@{aktueller\+\_\+taster}}
+\index{aktueller\+\_\+taster@{aktueller\+\_\+taster}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{aktueller\+\_\+taster}{aktueller\_taster}}
+{\footnotesize\ttfamily int aktueller\+\_\+taster = H\+I\+GH}
+
+
+
+Definiert in Zeile 61 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a124b7ae42481bdac66b27838ff061b05}\label{abschlussprojekt_8c_a124b7ae42481bdac66b27838ff061b05}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!displ\+\_\+nr@{displ\+\_\+nr}}
+\index{displ\+\_\+nr@{displ\+\_\+nr}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{displ\+\_\+nr}{displ\_nr}}
+{\footnotesize\ttfamily int displ\+\_\+nr = 0}
+
+
+
+Definiert in Zeile 64 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_aeb4ea2e27ad59b8b80c07f5d9a501578}\label{abschlussprojekt_8c_aeb4ea2e27ad59b8b80c07f5d9a501578}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!dt\+\_\+display\+\_\+ms@{dt\+\_\+display\+\_\+ms}}
+\index{dt\+\_\+display\+\_\+ms@{dt\+\_\+display\+\_\+ms}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{dt\+\_\+display\+\_\+ms}{dt\_display\_ms}}
+{\footnotesize\ttfamily unsigned long dt\+\_\+display\+\_\+ms = 2000}
+
+
+
+Definiert in Zeile 31 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a5a3210d0676305262c0be06fd27f8a77}\label{abschlussprojekt_8c_a5a3210d0676305262c0be06fd27f8a77}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!dt\+\_\+erdfeuchtemessung\+\_\+ms@{dt\+\_\+erdfeuchtemessung\+\_\+ms}}
+\index{dt\+\_\+erdfeuchtemessung\+\_\+ms@{dt\+\_\+erdfeuchtemessung\+\_\+ms}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{dt\+\_\+erdfeuchtemessung\+\_\+ms}{dt\_erdfeuchtemessung\_ms}}
+{\footnotesize\ttfamily unsigned long dt\+\_\+erdfeuchtemessung\+\_\+ms = 5000}
+
+
+
+Definiert in Zeile 34 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a634f1491bed4b1420222d3532ad6903a}\label{abschlussprojekt_8c_a634f1491bed4b1420222d3532ad6903a}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!dt\+\_\+heizung\+\_\+ms@{dt\+\_\+heizung\+\_\+ms}}
+\index{dt\+\_\+heizung\+\_\+ms@{dt\+\_\+heizung\+\_\+ms}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{dt\+\_\+heizung\+\_\+ms}{dt\_heizung\_ms}}
+{\footnotesize\ttfamily unsigned long dt\+\_\+heizung\+\_\+ms = 5000}
+
+
+
+Definiert in Zeile 37 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a504a3dfe31ae72c0de653e1f1417aff2}\label{abschlussprojekt_8c_a504a3dfe31ae72c0de653e1f1417aff2}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!dt\+\_\+helligkeit\+\_\+ms@{dt\+\_\+helligkeit\+\_\+ms}}
+\index{dt\+\_\+helligkeit\+\_\+ms@{dt\+\_\+helligkeit\+\_\+ms}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{dt\+\_\+helligkeit\+\_\+ms}{dt\_helligkeit\_ms}}
+{\footnotesize\ttfamily unsigned long dt\+\_\+helligkeit\+\_\+ms = 5000}
+
+
+
+Definiert in Zeile 43 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a5ff96735fd161b079af42979f93a463a}\label{abschlussprojekt_8c_a5ff96735fd161b079af42979f93a463a}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!dt\+\_\+luefter\+\_\+ms@{dt\+\_\+luefter\+\_\+ms}}
+\index{dt\+\_\+luefter\+\_\+ms@{dt\+\_\+luefter\+\_\+ms}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{dt\+\_\+luefter\+\_\+ms}{dt\_luefter\_ms}}
+{\footnotesize\ttfamily unsigned long dt\+\_\+luefter\+\_\+ms = 5000}
+
+
+
+Definiert in Zeile 40 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a8db8552a3060b9b4636a9f4844125b5e}\label{abschlussprojekt_8c_a8db8552a3060b9b4636a9f4844125b5e}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!dt\+\_\+temperaturmessung\+\_\+ms@{dt\+\_\+temperaturmessung\+\_\+ms}}
+\index{dt\+\_\+temperaturmessung\+\_\+ms@{dt\+\_\+temperaturmessung\+\_\+ms}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{dt\+\_\+temperaturmessung\+\_\+ms}{dt\_temperaturmessung\_ms}}
+{\footnotesize\ttfamily unsigned long dt\+\_\+temperaturmessung\+\_\+ms = 2000}
+
+
+
+Definiert in Zeile 28 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_afa416e7460cf043207be351d750b97fe}\label{abschlussprojekt_8c_afa416e7460cf043207be351d750b97fe}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!hum\+\_\+erde\+\_\+1\+\_\+adc@{hum\+\_\+erde\+\_\+1\+\_\+adc}}
+\index{hum\+\_\+erde\+\_\+1\+\_\+adc@{hum\+\_\+erde\+\_\+1\+\_\+adc}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{hum\+\_\+erde\+\_\+1\+\_\+adc}{hum\_erde\_1\_adc}}
+{\footnotesize\ttfamily int hum\+\_\+erde\+\_\+1\+\_\+adc}
+
+
+
+Definiert in Zeile 46 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_aacdbec939adcfa404b8c42b2e064b110}\label{abschlussprojekt_8c_aacdbec939adcfa404b8c42b2e064b110}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!hum\+\_\+erde\+\_\+2\+\_\+adc@{hum\+\_\+erde\+\_\+2\+\_\+adc}}
+\index{hum\+\_\+erde\+\_\+2\+\_\+adc@{hum\+\_\+erde\+\_\+2\+\_\+adc}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{hum\+\_\+erde\+\_\+2\+\_\+adc}{hum\_erde\_2\_adc}}
+{\footnotesize\ttfamily int hum\+\_\+erde\+\_\+2\+\_\+adc}
+
+
+
+Definiert in Zeile 47 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_ac9fcb87eca48e4002731015e004966ef}\label{abschlussprojekt_8c_ac9fcb87eca48e4002731015e004966ef}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!hum\+\_\+luft@{hum\+\_\+luft}}
+\index{hum\+\_\+luft@{hum\+\_\+luft}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{hum\+\_\+luft}{hum\_luft}}
+{\footnotesize\ttfamily int hum\+\_\+luft}
+
+
+
+Definiert in Zeile 48 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_abb1c509cfb119e70585771234accdc4c}\label{abschlussprojekt_8c_abb1c509cfb119e70585771234accdc4c}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!limit\+\_\+feuchte\+\_\+1\+\_\+adc@{limit\+\_\+feuchte\+\_\+1\+\_\+adc}}
+\index{limit\+\_\+feuchte\+\_\+1\+\_\+adc@{limit\+\_\+feuchte\+\_\+1\+\_\+adc}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{limit\+\_\+feuchte\+\_\+1\+\_\+adc}{limit\_feuchte\_1\_adc}}
+{\footnotesize\ttfamily int limit\+\_\+feuchte\+\_\+1\+\_\+adc}
+
+
+
+Definiert in Zeile 52 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a11941af86181c1d0476b4bad92345dee}\label{abschlussprojekt_8c_a11941af86181c1d0476b4bad92345dee}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!limit\+\_\+feuchte\+\_\+2\+\_\+adc@{limit\+\_\+feuchte\+\_\+2\+\_\+adc}}
+\index{limit\+\_\+feuchte\+\_\+2\+\_\+adc@{limit\+\_\+feuchte\+\_\+2\+\_\+adc}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{limit\+\_\+feuchte\+\_\+2\+\_\+adc}{limit\_feuchte\_2\_adc}}
+{\footnotesize\ttfamily int limit\+\_\+feuchte\+\_\+2\+\_\+adc}
+
+
+
+Definiert in Zeile 53 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a3f6dd9ed3b997c063d7c90a38a69ab3a}\label{abschlussprojekt_8c_a3f6dd9ed3b997c063d7c90a38a69ab3a}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!limit\+\_\+luefter\+\_\+adc@{limit\+\_\+luefter\+\_\+adc}}
+\index{limit\+\_\+luefter\+\_\+adc@{limit\+\_\+luefter\+\_\+adc}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{limit\+\_\+luefter\+\_\+adc}{limit\_luefter\_adc}}
+{\footnotesize\ttfamily int limit\+\_\+luefter\+\_\+adc}
+
+
+
+Definiert in Zeile 56 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a27d916670e311d9e7881ebdc4807e0f5}\label{abschlussprojekt_8c_a27d916670e311d9e7881ebdc4807e0f5}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!limit\+\_\+luefter\+\_\+C@{limit\+\_\+luefter\+\_\+C}}
+\index{limit\+\_\+luefter\+\_\+C@{limit\+\_\+luefter\+\_\+C}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{limit\+\_\+luefter\+\_\+C}{limit\_luefter\_C}}
+{\footnotesize\ttfamily int limit\+\_\+luefter\+\_\+C}
+
+
+
+Definiert in Zeile 57 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a8f0ffb4ec25253a324ab4dac6d3cf1c4}\label{abschlussprojekt_8c_a8f0ffb4ec25253a324ab4dac6d3cf1c4}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!limit\+\_\+temp\+\_\+adc@{limit\+\_\+temp\+\_\+adc}}
+\index{limit\+\_\+temp\+\_\+adc@{limit\+\_\+temp\+\_\+adc}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{limit\+\_\+temp\+\_\+adc}{limit\_temp\_adc}}
+{\footnotesize\ttfamily int limit\+\_\+temp\+\_\+adc}
+
+
+
+Definiert in Zeile 54 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a7af3ab4da71f5b8ce8c0d93640690817}\label{abschlussprojekt_8c_a7af3ab4da71f5b8ce8c0d93640690817}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!limit\+\_\+temp\+\_\+C@{limit\+\_\+temp\+\_\+C}}
+\index{limit\+\_\+temp\+\_\+C@{limit\+\_\+temp\+\_\+C}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{limit\+\_\+temp\+\_\+C}{limit\_temp\_C}}
+{\footnotesize\ttfamily int limit\+\_\+temp\+\_\+C}
+
+
+
+Definiert in Zeile 55 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a6d6f46738f23818a51a33e54540fc834}\label{abschlussprojekt_8c_a6d6f46738f23818a51a33e54540fc834}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!t0\+\_\+display@{t0\+\_\+display}}
+\index{t0\+\_\+display@{t0\+\_\+display}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{t0\+\_\+display}{t0\_display}}
+{\footnotesize\ttfamily unsigned long t0\+\_\+display}
+
+
+
+Definiert in Zeile 30 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_aaf3eaa118947402c939df227b9daad8e}\label{abschlussprojekt_8c_aaf3eaa118947402c939df227b9daad8e}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!t0\+\_\+erdfeuchtemessung@{t0\+\_\+erdfeuchtemessung}}
+\index{t0\+\_\+erdfeuchtemessung@{t0\+\_\+erdfeuchtemessung}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{t0\+\_\+erdfeuchtemessung}{t0\_erdfeuchtemessung}}
+{\footnotesize\ttfamily unsigned long t0\+\_\+erdfeuchtemessung}
+
+
+
+Definiert in Zeile 33 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a9ca81fb931b2eb83f3a822a49df8995f}\label{abschlussprojekt_8c_a9ca81fb931b2eb83f3a822a49df8995f}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!t0\+\_\+heizung@{t0\+\_\+heizung}}
+\index{t0\+\_\+heizung@{t0\+\_\+heizung}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{t0\+\_\+heizung}{t0\_heizung}}
+{\footnotesize\ttfamily unsigned long t0\+\_\+heizung}
+
+
+
+Definiert in Zeile 36 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_ab55c3f7b2994108f2af60557f2c801d2}\label{abschlussprojekt_8c_ab55c3f7b2994108f2af60557f2c801d2}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!t0\+\_\+helligkeit@{t0\+\_\+helligkeit}}
+\index{t0\+\_\+helligkeit@{t0\+\_\+helligkeit}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{t0\+\_\+helligkeit}{t0\_helligkeit}}
+{\footnotesize\ttfamily unsigned long t0\+\_\+helligkeit}
+
+
+
+Definiert in Zeile 42 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a1cc8e9a2f7e21352f0f123728881ad62}\label{abschlussprojekt_8c_a1cc8e9a2f7e21352f0f123728881ad62}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!t0\+\_\+luefter@{t0\+\_\+luefter}}
+\index{t0\+\_\+luefter@{t0\+\_\+luefter}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{t0\+\_\+luefter}{t0\_luefter}}
+{\footnotesize\ttfamily unsigned long t0\+\_\+luefter}
+
+
+
+Definiert in Zeile 39 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a34dde2eacd6bcd6c70d2717074e5422e}\label{abschlussprojekt_8c_a34dde2eacd6bcd6c70d2717074e5422e}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!t0\+\_\+temperaturmessung@{t0\+\_\+temperaturmessung}}
+\index{t0\+\_\+temperaturmessung@{t0\+\_\+temperaturmessung}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{t0\+\_\+temperaturmessung}{t0\_temperaturmessung}}
+{\footnotesize\ttfamily unsigned long t0\+\_\+temperaturmessung}
+
+
+
+Definiert in Zeile 27 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_a0e6f058da75dead800f4a33e63586703}\label{abschlussprojekt_8c_a0e6f058da75dead800f4a33e63586703}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!temp\+\_\+luft\+\_\+C@{temp\+\_\+luft\+\_\+C}}
+\index{temp\+\_\+luft\+\_\+C@{temp\+\_\+luft\+\_\+C}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{temp\+\_\+luft\+\_\+C}{temp\_luft\_C}}
+{\footnotesize\ttfamily int temp\+\_\+luft\+\_\+C}
+
+
+
+Definiert in Zeile 49 der Datei abschlussprojekt.\+c.
+
+\mbox{\Hypertarget{abschlussprojekt_8c_aa8909f35a0f963844648169d995f3d0a}\label{abschlussprojekt_8c_aa8909f35a0f963844648169d995f3d0a}} 
+\index{abschlussprojekt.\+c@{abschlussprojekt.\+c}!voriger\+\_\+taster@{voriger\+\_\+taster}}
+\index{voriger\+\_\+taster@{voriger\+\_\+taster}!abschlussprojekt.\+c@{abschlussprojekt.\+c}}
+\subsubsection{\texorpdfstring{voriger\+\_\+taster}{voriger\_taster}}
+{\footnotesize\ttfamily int voriger\+\_\+taster}
+
+
+
+Definiert in Zeile 60 der Datei abschlussprojekt.\+c.
+

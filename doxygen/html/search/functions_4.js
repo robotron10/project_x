@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tuer_5fzu',['tuer_zu',['../abschlussprojekt__doxygen_8c.html#a204dcf18a43cbaf756753c4de7bc10b4',1,'abschlussprojekt_doxygen.c']]]
+  ['setup',['setup',['../abschlussprojekt_8c.html#a4fc01d736fe50cf5b977f755b675f11d',1,'abschlussprojekt.c']]]
 ];

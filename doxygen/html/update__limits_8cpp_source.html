@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Abschlussprojekt vollautomatisches Gewächshaus: /home/zero/abschlussprojekt/update_limits.cpp Quellcode</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="oshw-logo-400-px.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Abschlussprojekt vollautomatisches Gewächshaus
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Erzeugt von Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Suchen');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Suchen');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_4784e58adbfa92951ca018d6630c5a2f.html">abschlussprojekt</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">update_limits.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="update__limits_8cpp.html">gehe zur Dokumentation dieser Datei</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;Arduino.h&gt;</span></div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="makros_8h.html">makros.h</a>&quot;</span></div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="update__limits_8h.html">update_limits.h</a>&quot;</span></div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="update__limits_8cpp.html#abb1c509cfb119e70585771234accdc4c">limit_feuchte_1_adc</a>;</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="update__limits_8cpp.html#a11941af86181c1d0476b4bad92345dee">limit_feuchte_2_adc</a>;</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="update__limits_8cpp.html#a8f0ffb4ec25253a324ab4dac6d3cf1c4">limit_temp_adc</a>;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="update__limits_8cpp.html#a7af3ab4da71f5b8ce8c0d93640690817">limit_temp_C</a>;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="update__limits_8cpp.html#a3f6dd9ed3b997c063d7c90a38a69ab3a">limit_luefter_adc</a>;</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="update__limits_8cpp.html#a27d916670e311d9e7881ebdc4807e0f5">limit_luefter_C</a>;</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">// aktualisieren der Schwellenwerte</span></div><div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="update__limits_8h.html#aa626307640ddc7baa35c92ff1713e6bb">   13</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="update__limits_8cpp.html#a1efb14d12b812e3a0f08188dbaeccc5e">update_limits</a>() {</div><div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  <a class="code" href="update__limits_8cpp.html#abb1c509cfb119e70585771234accdc4c">limit_feuchte_1_adc</a> = analogRead( <a class="code" href="makros_8h.html#a2cfb9232ef93fe3dbe489ea0ed78ab5c">LIMIT_ERDFEUCHTE_1</a> );                                        <span class="comment">//  Werte für den ADC Erdfeuchtesensor 1</span></div><div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  <a class="code" href="update__limits_8cpp.html#a11941af86181c1d0476b4bad92345dee">limit_feuchte_2_adc</a> = analogRead( <a class="code" href="makros_8h.html#a06863b5c4eac468b904afed8c6c36440">LIMIT_ERDFEUCHTE_2</a> );                                        <span class="comment">//  Werte für den ADC Erdfeuchtesensor 2</span></div><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  <a class="code" href="update__limits_8cpp.html#a8f0ffb4ec25253a324ab4dac6d3cf1c4">limit_temp_adc</a> = analogRead( <a class="code" href="makros_8h.html#ae07fe35374a1fd6e6d921bd39ba73b99">LIMIT_TEMPERATUR</a> );                                               <span class="comment">//  Werte für den ADC Temp-Sensor &lt;-&gt; Heizung</span></div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  <a class="code" href="update__limits_8cpp.html#a7af3ab4da71f5b8ce8c0d93640690817">limit_temp_C</a> = map( <a class="code" href="update__limits_8cpp.html#a8f0ffb4ec25253a324ab4dac6d3cf1c4">limit_temp_adc</a>, 0, 1023, 10, 40 );                                         <span class="comment">//  mapping für Poti Grad Celsius</span></div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  </div><div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  <a class="code" href="update__limits_8cpp.html#a3f6dd9ed3b997c063d7c90a38a69ab3a">limit_luefter_adc</a> = analogRead( <a class="code" href="makros_8h.html#a392b9a22bb52d29603ffb57ab4255e86">LIMIT_LUEFTER</a> );                                               <span class="comment">//  Werte für den ADC Temp-Sensor &lt;-&gt; Lüfter</span></div><div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <a class="code" href="update__limits_8cpp.html#a27d916670e311d9e7881ebdc4807e0f5">limit_luefter_C</a> = map( <a class="code" href="update__limits_8cpp.html#a3f6dd9ed3b997c063d7c90a38a69ab3a">limit_luefter_adc</a>, 0, 1023, 15, 35 );                                   <span class="comment">//  mapping für Poti Grad Celsius</span></div><div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;}</div><div class="ttc" id="update__limits_8cpp_html_a7af3ab4da71f5b8ce8c0d93640690817"><div class="ttname"><a href="update__limits_8cpp.html#a7af3ab4da71f5b8ce8c0d93640690817">limit_temp_C</a></div><div class="ttdeci">int limit_temp_C</div><div class="ttdef"><b>Definition:</b> <a href="abschlussprojekt_8c_source.html#l00055">abschlussprojekt.c:55</a></div></div>
+<div class="ttc" id="update__limits_8h_html"><div class="ttname"><a href="update__limits_8h.html">update_limits.h</a></div></div>
+<div class="ttc" id="update__limits_8cpp_html_a27d916670e311d9e7881ebdc4807e0f5"><div class="ttname"><a href="update__limits_8cpp.html#a27d916670e311d9e7881ebdc4807e0f5">limit_luefter_C</a></div><div class="ttdeci">int limit_luefter_C</div><div class="ttdef"><b>Definition:</b> <a href="abschlussprojekt_8c_source.html#l00057">abschlussprojekt.c:57</a></div></div>
+<div class="ttc" id="update__limits_8cpp_html_a11941af86181c1d0476b4bad92345dee"><div class="ttname"><a href="update__limits_8cpp.html#a11941af86181c1d0476b4bad92345dee">limit_feuchte_2_adc</a></div><div class="ttdeci">int limit_feuchte_2_adc</div><div class="ttdef"><b>Definition:</b> <a href="abschlussprojekt_8c_source.html#l00053">abschlussprojekt.c:53</a></div></div>
+<div class="ttc" id="makros_8h_html_a2cfb9232ef93fe3dbe489ea0ed78ab5c"><div class="ttname"><a href="makros_8h.html#a2cfb9232ef93fe3dbe489ea0ed78ab5c">LIMIT_ERDFEUCHTE_1</a></div><div class="ttdeci">#define LIMIT_ERDFEUCHTE_1</div><div class="ttdef"><b>Definition:</b> <a href="makros_8h_source.html#l00022">makros.h:22</a></div></div>
+<div class="ttc" id="update__limits_8cpp_html_a8f0ffb4ec25253a324ab4dac6d3cf1c4"><div class="ttname"><a href="update__limits_8cpp.html#a8f0ffb4ec25253a324ab4dac6d3cf1c4">limit_temp_adc</a></div><div class="ttdeci">int limit_temp_adc</div><div class="ttdef"><b>Definition:</b> <a href="abschlussprojekt_8c_source.html#l00054">abschlussprojekt.c:54</a></div></div>
+<div class="ttc" id="update__limits_8cpp_html_abb1c509cfb119e70585771234accdc4c"><div class="ttname"><a href="update__limits_8cpp.html#abb1c509cfb119e70585771234accdc4c">limit_feuchte_1_adc</a></div><div class="ttdeci">int limit_feuchte_1_adc</div><div class="ttdef"><b>Definition:</b> <a href="abschlussprojekt_8c_source.html#l00052">abschlussprojekt.c:52</a></div></div>
+<div class="ttc" id="update__limits_8cpp_html_a1efb14d12b812e3a0f08188dbaeccc5e"><div class="ttname"><a href="update__limits_8cpp.html#a1efb14d12b812e3a0f08188dbaeccc5e">update_limits</a></div><div class="ttdeci">void update_limits()</div><div class="ttdoc">aktualisieren der Schwellenwerte /// </div><div class="ttdef"><b>Definition:</b> <a href="update__limits_8cpp_source.html#l00013">update_limits.cpp:13</a></div></div>
+<div class="ttc" id="makros_8h_html_ae07fe35374a1fd6e6d921bd39ba73b99"><div class="ttname"><a href="makros_8h.html#ae07fe35374a1fd6e6d921bd39ba73b99">LIMIT_TEMPERATUR</a></div><div class="ttdeci">#define LIMIT_TEMPERATUR</div><div class="ttdef"><b>Definition:</b> <a href="makros_8h_source.html#l00024">makros.h:24</a></div></div>
+<div class="ttc" id="update__limits_8cpp_html_a3f6dd9ed3b997c063d7c90a38a69ab3a"><div class="ttname"><a href="update__limits_8cpp.html#a3f6dd9ed3b997c063d7c90a38a69ab3a">limit_luefter_adc</a></div><div class="ttdeci">int limit_luefter_adc</div><div class="ttdef"><b>Definition:</b> <a href="abschlussprojekt_8c_source.html#l00056">abschlussprojekt.c:56</a></div></div>
+<div class="ttc" id="makros_8h_html_a06863b5c4eac468b904afed8c6c36440"><div class="ttname"><a href="makros_8h.html#a06863b5c4eac468b904afed8c6c36440">LIMIT_ERDFEUCHTE_2</a></div><div class="ttdeci">#define LIMIT_ERDFEUCHTE_2</div><div class="ttdef"><b>Definition:</b> <a href="makros_8h_source.html#l00023">makros.h:23</a></div></div>
+<div class="ttc" id="makros_8h_html_a392b9a22bb52d29603ffb57ab4255e86"><div class="ttname"><a href="makros_8h.html#a392b9a22bb52d29603ffb57ab4255e86">LIMIT_LUEFTER</a></div><div class="ttdeci">#define LIMIT_LUEFTER</div><div class="ttdef"><b>Definition:</b> <a href="makros_8h_source.html#l00025">makros.h:25</a></div></div>
+<div class="ttc" id="makros_8h_html"><div class="ttname"><a href="makros_8h.html">makros.h</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Erzeugt von &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.13
+</small></address>
+</body>
+</html>

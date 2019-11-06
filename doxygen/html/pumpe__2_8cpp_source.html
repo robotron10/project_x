@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Abschlussprojekt vollautomatisches Gewächshaus: /home/zero/abschlussprojekt/pumpe_2.cpp Quellcode</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="oshw-logo-400-px.png"/></td>
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Abschlussprojekt vollautomatisches Gewächshaus
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Erzeugt von Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Suchen');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Suchen');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_4784e58adbfa92951ca018d6630c5a2f.html">abschlussprojekt</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">pumpe_2.cpp</div>  </div>
+</div><!--header-->
+<div class="contents">
+<a href="pumpe__2_8cpp.html">gehe zur Dokumentation dieser Datei</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;Arduino.h&gt;</span></div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="makros_8h.html">makros.h</a>&quot;</span></div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="tuer__zu_8h.html">tuer_zu.h</a>&quot;</span></div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="pumpe__2_8h.html">pumpe_2.h</a>&quot;</span></div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="pumpe__2_8cpp.html#aacdbec939adcfa404b8c42b2e064b110">hum_erde_2_adc</a>;</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">extern</span> <span class="keywordtype">int</span> <a class="code" href="pumpe__2_8cpp.html#a11941af86181c1d0476b4bad92345dee">limit_feuchte_2_adc</a>;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div><div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="pumpe__2_8cpp.html#a6ba123b4db543f23167f7579070cb078">    9</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="pumpe__2_8cpp.html#a6ba123b4db543f23167f7579070cb078">t0_pumpe_2</a>;</div><div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="pumpe__2_8cpp.html#aa162b2945b33207aaa0e405a04e21049">   10</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="pumpe__2_8cpp.html#aa162b2945b33207aaa0e405a04e21049">dt_pumpendauer_2_ms</a> = 5000;</div><div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="pumpe__2_8cpp.html#ae43a32686ec363ab79244493e815eb1a">   11</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="pumpe__2_8cpp.html#ae43a32686ec363ab79244493e815eb1a">t0_durchfeuchtung_2</a>;                                                                <span class="comment">//  </span></div><div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="pumpe__2_8cpp.html#ad4082581e55599e78402c968aa6fd220">   12</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <a class="code" href="pumpe__2_8cpp.html#ad4082581e55599e78402c968aa6fd220">dt_warten_durchfeuchtung_2_ms</a> = 10000;</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div><div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="pumpe__2_8cpp.html#ae5d230a4da9cb370063e945d94d7043a">   14</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="pumpe__2_8cpp.html#ae5d230a4da9cb370063e945d94d7043a">zustand_2</a> = <a class="code" href="makros_8h.html#acd99f73b20037e5fcba7a4a031e0f320">zustand_warten_zu_trocken</a>;</div><div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div><div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="pumpe__2_8h.html#a754bd6f3d38e83cc0365704a45bf8f37">   16</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="pumpe__2_8cpp.html#ab5052e43d029ec1d5b2899be0135e45c">pumpen_2</a>(){</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  <span class="comment">// für die Pumpe oben</span></div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <span class="keywordflow">switch</span> ( <a class="code" href="pumpe__2_8cpp.html#ae5d230a4da9cb370063e945d94d7043a">zustand_2</a> ) {</div><div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div><div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="makros_8h.html#acd99f73b20037e5fcba7a4a031e0f320">zustand_warten_zu_trocken</a> :</div><div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;      <span class="comment">//--- im Zustand bleiben, bis if() erfüllt -&gt; neuer Zustand</span></div><div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;      <span class="keywordflow">if</span> (( <a class="code" href="pumpe__2_8cpp.html#aacdbec939adcfa404b8c42b2e064b110">hum_erde_2_adc</a> &gt; <a class="code" href="pumpe__2_8cpp.html#a11941af86181c1d0476b4bad92345dee">limit_feuchte_2_adc</a>) and ( <a class="code" href="tuer__zu_8cpp.html#a204dcf18a43cbaf756753c4de7bc10b4">tuer_zu</a>() )) {                        <span class="comment">//  wenn Erdfeuchte2 sehr trocken, dann</span></div><div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        digitalWrite(<a class="code" href="makros_8h.html#ae5585e7e3d65edaff2d78517eb4f759d">RELAIS_PUMPE_OBEN</a>, LOW );                                                <span class="comment">//  Pumpe an und wässern (LOW = Relais EIN)</span></div><div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <a class="code" href="pumpe__2_8cpp.html#a6ba123b4db543f23167f7579070cb078">t0_pumpe_2</a> = millis();                                                                <span class="comment">//  neue Zeit setzen</span></div><div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <a class="code" href="pumpe__2_8cpp.html#ae5d230a4da9cb370063e945d94d7043a">zustand_2</a> = <a class="code" href="makros_8h.html#a451a24326bd3759cea1cbd0da8d4bb12">zustand_pumpt</a>;                                                            <span class="comment">//  neuen Zustand setzen</span></div><div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      }</div><div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      <span class="keywordflow">break</span>;</div><div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div><div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="makros_8h.html#a451a24326bd3759cea1cbd0da8d4bb12">zustand_pumpt</a>:</div><div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;      <span class="keywordflow">if</span> (( millis() - <a class="code" href="pumpe__2_8cpp.html#a6ba123b4db543f23167f7579070cb078">t0_pumpe_2</a> &gt; <a class="code" href="pumpe__2_8cpp.html#aa162b2945b33207aaa0e405a04e21049">dt_pumpendauer_2_ms</a> ) or ( not <a class="code" href="tuer__zu_8cpp.html#a204dcf18a43cbaf756753c4de7bc10b4">tuer_zu</a>() )) {             <span class="comment">//  wenn die Pumpzeit (Pumpe an) abgelaufen ist, dann</span></div><div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        digitalWrite(<a class="code" href="makros_8h.html#ae5585e7e3d65edaff2d78517eb4f759d">RELAIS_PUMPE_OBEN</a>, HIGH );                                               <span class="comment">//  Pumpe ausschalten (HIGH = Relais AUS)</span></div><div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="pumpe__2_8cpp.html#ae43a32686ec363ab79244493e815eb1a">t0_durchfeuchtung_2</a> = millis();                                                       <span class="comment">//  neue Zeit setzen</span></div><div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <a class="code" href="pumpe__2_8cpp.html#ae5d230a4da9cb370063e945d94d7043a">zustand_2</a> = <a class="code" href="makros_8h.html#a15e9e3e52a86bfb566502710f2453c20">zustand_warten_durchfeuchtung</a>;                                            <span class="comment">//  neuen Zustand setzen</span></div><div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      }</div><div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;      <span class="keywordflow">break</span>;</div><div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div><div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="makros_8h.html#a15e9e3e52a86bfb566502710f2453c20">zustand_warten_durchfeuchtung</a> :</div><div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;      <span class="keywordflow">if</span> (( millis() - <a class="code" href="pumpe__2_8cpp.html#ae43a32686ec363ab79244493e815eb1a">t0_durchfeuchtung_2</a> &gt; <a class="code" href="pumpe__2_8cpp.html#ad4082581e55599e78402c968aa6fd220">dt_warten_durchfeuchtung_2_ms</a> ) or ( not <a class="code" href="tuer__zu_8cpp.html#a204dcf18a43cbaf756753c4de7bc10b4">tuer_zu</a>() )) {     <span class="comment">//  wenn die Sickerzeit des Wassers abgelaufen ist, dann</span></div><div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="pumpe__2_8cpp.html#ae5d230a4da9cb370063e945d94d7043a">zustand_2</a> = <a class="code" href="makros_8h.html#acd99f73b20037e5fcba7a4a031e0f320">zustand_warten_zu_trocken</a>;                                                <span class="comment">//  neuen Zustand setzen um wieder zu messen, ob die Erde trocken oder feucht ist</span></div><div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      }</div><div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;      <span class="keywordflow">break</span>;</div><div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  }</div><div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  </div><div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div><div class="ttc" id="makros_8h_html_acd99f73b20037e5fcba7a4a031e0f320"><div class="ttname"><a href="makros_8h.html#acd99f73b20037e5fcba7a4a031e0f320">zustand_warten_zu_trocken</a></div><div class="ttdeci">#define zustand_warten_zu_trocken</div><div class="ttdef"><b>Definition:</b> <a href="makros_8h_source.html#l00028">makros.h:28</a></div></div>
+<div class="ttc" id="makros_8h_html_ae5585e7e3d65edaff2d78517eb4f759d"><div class="ttname"><a href="makros_8h.html#ae5585e7e3d65edaff2d78517eb4f759d">RELAIS_PUMPE_OBEN</a></div><div class="ttdeci">#define RELAIS_PUMPE_OBEN</div><div class="ttdef"><b>Definition:</b> <a href="makros_8h_source.html#l00010">makros.h:10</a></div></div>
+<div class="ttc" id="pumpe__2_8cpp_html_ad4082581e55599e78402c968aa6fd220"><div class="ttname"><a href="pumpe__2_8cpp.html#ad4082581e55599e78402c968aa6fd220">dt_warten_durchfeuchtung_2_ms</a></div><div class="ttdeci">unsigned long dt_warten_durchfeuchtung_2_ms</div><div class="ttdef"><b>Definition:</b> <a href="pumpe__2_8cpp_source.html#l00012">pumpe_2.cpp:12</a></div></div>
+<div class="ttc" id="pumpe__2_8cpp_html_a11941af86181c1d0476b4bad92345dee"><div class="ttname"><a href="pumpe__2_8cpp.html#a11941af86181c1d0476b4bad92345dee">limit_feuchte_2_adc</a></div><div class="ttdeci">int limit_feuchte_2_adc</div><div class="ttdef"><b>Definition:</b> <a href="abschlussprojekt_8c_source.html#l00053">abschlussprojekt.c:53</a></div></div>
+<div class="ttc" id="makros_8h_html_a451a24326bd3759cea1cbd0da8d4bb12"><div class="ttname"><a href="makros_8h.html#a451a24326bd3759cea1cbd0da8d4bb12">zustand_pumpt</a></div><div class="ttdeci">#define zustand_pumpt</div><div class="ttdef"><b>Definition:</b> <a href="makros_8h_source.html#l00029">makros.h:29</a></div></div>
+<div class="ttc" id="pumpe__2_8cpp_html_ae5d230a4da9cb370063e945d94d7043a"><div class="ttname"><a href="pumpe__2_8cpp.html#ae5d230a4da9cb370063e945d94d7043a">zustand_2</a></div><div class="ttdeci">int zustand_2</div><div class="ttdef"><b>Definition:</b> <a href="pumpe__2_8cpp_source.html#l00014">pumpe_2.cpp:14</a></div></div>
+<div class="ttc" id="tuer__zu_8cpp_html_a204dcf18a43cbaf756753c4de7bc10b4"><div class="ttname"><a href="tuer__zu_8cpp.html#a204dcf18a43cbaf756753c4de7bc10b4">tuer_zu</a></div><div class="ttdeci">bool tuer_zu()</div><div class="ttdoc">Auswertung des REED-Kontaktes ///. </div><div class="ttdef"><b>Definition:</b> <a href="tuer__zu_8cpp_source.html#l00008">tuer_zu.cpp:8</a></div></div>
+<div class="ttc" id="pumpe__2_8cpp_html_aacdbec939adcfa404b8c42b2e064b110"><div class="ttname"><a href="pumpe__2_8cpp.html#aacdbec939adcfa404b8c42b2e064b110">hum_erde_2_adc</a></div><div class="ttdeci">int hum_erde_2_adc</div><div class="ttdef"><b>Definition:</b> <a href="abschlussprojekt_8c_source.html#l00047">abschlussprojekt.c:47</a></div></div>
+<div class="ttc" id="makros_8h_html_a15e9e3e52a86bfb566502710f2453c20"><div class="ttname"><a href="makros_8h.html#a15e9e3e52a86bfb566502710f2453c20">zustand_warten_durchfeuchtung</a></div><div class="ttdeci">#define zustand_warten_durchfeuchtung</div><div class="ttdef"><b>Definition:</b> <a href="makros_8h_source.html#l00030">makros.h:30</a></div></div>
+<div class="ttc" id="tuer__zu_8h_html"><div class="ttname"><a href="tuer__zu_8h.html">tuer_zu.h</a></div></div>
+<div class="ttc" id="pumpe__2_8cpp_html_aa162b2945b33207aaa0e405a04e21049"><div class="ttname"><a href="pumpe__2_8cpp.html#aa162b2945b33207aaa0e405a04e21049">dt_pumpendauer_2_ms</a></div><div class="ttdeci">unsigned long dt_pumpendauer_2_ms</div><div class="ttdef"><b>Definition:</b> <a href="pumpe__2_8cpp_source.html#l00010">pumpe_2.cpp:10</a></div></div>
+<div class="ttc" id="pumpe__2_8h_html"><div class="ttname"><a href="pumpe__2_8h.html">pumpe_2.h</a></div></div>
+<div class="ttc" id="pumpe__2_8cpp_html_ab5052e43d029ec1d5b2899be0135e45c"><div class="ttname"><a href="pumpe__2_8cpp.html#ab5052e43d029ec1d5b2899be0135e45c">pumpen_2</a></div><div class="ttdeci">void pumpen_2()</div><div class="ttdoc">Zustandsautomat Pumpe 2 ///. </div><div class="ttdef"><b>Definition:</b> <a href="pumpe__2_8cpp_source.html#l00016">pumpe_2.cpp:16</a></div></div>
+<div class="ttc" id="pumpe__2_8cpp_html_ae43a32686ec363ab79244493e815eb1a"><div class="ttname"><a href="pumpe__2_8cpp.html#ae43a32686ec363ab79244493e815eb1a">t0_durchfeuchtung_2</a></div><div class="ttdeci">unsigned long t0_durchfeuchtung_2</div><div class="ttdef"><b>Definition:</b> <a href="pumpe__2_8cpp_source.html#l00011">pumpe_2.cpp:11</a></div></div>
+<div class="ttc" id="pumpe__2_8cpp_html_a6ba123b4db543f23167f7579070cb078"><div class="ttname"><a href="pumpe__2_8cpp.html#a6ba123b4db543f23167f7579070cb078">t0_pumpe_2</a></div><div class="ttdeci">unsigned long t0_pumpe_2</div><div class="ttdef"><b>Definition:</b> <a href="pumpe__2_8cpp_source.html#l00009">pumpe_2.cpp:9</a></div></div>
+<div class="ttc" id="makros_8h_html"><div class="ttname"><a href="makros_8h.html">makros.h</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Erzeugt von &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.13
+</small></address>
+</body>
+</html>
