@@ -1,12 +1,12 @@
 EESchema Schematic File Version 4
 LIBS:dsub_1-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "Zuordnung Anschlüsse"
-Date "2019-09-26"
+Date "2019-11-20"
 Rev "0.2"
 Comp "STB AEA8"
 Comment1 "Nawroth, Graf, Roth"
@@ -108,7 +108,7 @@ $EndComp
 Text Notes 900  7350 0    157  Italic 0
 Stecker:\nTorsten -> Männchen, Male\nFabian -> Weibchen, Female
 Text Notes 950  1400 0    79   ~ 0
-Leistung:\nHeizung -> 12V/4,5A  (55W)\nPumpe -> 3-5V/200-360mA\nLüfter  -> 12V/0,11A\nLEDs   -> rot 12V/80mA; blau 12V/80mA
+Leistung:\nHeizung -> 12V/2,9A  (35W)\nPumpe -> 3-5V/200-360mA\nLüfter  -> 12V/0,11A\nLEDs   -> rot 12V/80mA; blau 12V/80mA
 Text Notes 6200 4100 0    79   ~ 0
 extra Stecker, \nweil zuviel Strom für SubD
 Wire Notes Line
