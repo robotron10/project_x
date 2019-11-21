@@ -175,7 +175,7 @@ void loop() {
   /******************************** Heizung <--> Temperatursensor DHT22 ***********************************/
   if ( ( millis() - t0_heizung ) > dt_heizung_ms ) {                                          //  wenn Zeit für Heizen abgelaufen, dann
     t0_heizung = millis();                                                                    //  Timer auf neuen Wert setzen
-    if (temp_luft_C < limit_temp_adc ) {                                                        //  wenn Lufttemperatur kälter als eingesteller Wert, dann
+    if (temp_luft_C < limit_temp_C ) {                                                        //  wenn Lufttemperatur kälter als eingesteller Wert, dann
       digitalWrite(RELAIS_HEIZUNG, LOW );                                                     //  heizen
     }
     else {                                                                                    //  sonst
@@ -186,7 +186,7 @@ void loop() {
   /******************************** Lüfter <--> Temperatursensor DHT22 ************************************/
   if ( ( millis() - t0_luefter ) > dt_luefter_ms ) {
     t0_luefter = millis();
-    if (temp_luft_C > limit_luefter_adc ) {                                                     //  wenn Lufttemperatur wärmer als eingesteller Wert, dann
+    if (temp_luft_C > limit_luefter_C ) {                                                     //  wenn Lufttemperatur wärmer als eingesteller Wert, dann
       digitalWrite(RELAIS_LUEFTER, LOW );                                                     //  Lüfter einschalten (LOW = Relais EIN)
     }
     else {                                                                                    //  sonst
